@@ -1,0 +1,1236 @@
+{{!< layout/default}}
+
+
+{{#extend "css"}}
+
+
+{{/extend}}
+
+<div class="row">
+	<div class="col-md-10 col-md-offset-1 box-shadows" style="background-color: #FFFFFF; padding-top: 10px; ">
+		<table id="table" class="display cell-border" cellspacing="0" width="100%">
+		  <thead>
+		      <tr>
+	          <th>Empresa:</th>
+	          <th>Rut:</th>
+	          <th>Factura/s pendiente/s:</th>
+	          <th>Estado:</th>
+	          <th>Monto:</th>
+		      </tr>
+		  </thead>		 
+		</table>	
+	</div>
+</div>
+
+<div class="row">
+
+	<div class="col-md-1"></div>
+
+	<div class="col-md-4 box-shadows" style="background:#FFFFFF; height: 300px; margin-top: 10px;">
+		<center><h1>Monto total adeudado pendiente</h1></center>
+		<div style="height: 5px; width:100%; background-color:rgba(231, 76, 60,0.3);"></div>
+		<center><p id="totalOwed"></p></center>
+	</div>
+	<div class="col-md-1"></div>
+	<div class="col-md-5 box-shadows" style="margin-top: 10px;" >
+		<div id="totalChart" style="height: 300px; margin: 0 auto"></div>
+	</div>
+	<!--
+	<div class="col-md-4 box-shadows" style="background:#FFFFFF; height: 300px; margin-top: 10px;">
+		<center><h1>Monto total PAGADO</h1></center>
+		<div style="height: 5px; width:100%; background-color:#1ABC9C;"></div>
+		<center><h1 id="totalPaid"></h1></center>
+	</div>
+	-->	
+
+	<div class="col-md-1"></div>
+
+</div>
+
+
+<!--
+<div style="width: 100%; height: 200px; background:#333645; bottom:0; margin-top:100px;">
+	
+</div>
+-->
+
+
+
+<div id="clientInfo" class="modal fade" tabindex="-1" role="dialog">
+  <div class="modal-dialog modal-lg" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+        <center><h1 class="modal-title" id="modal_title">Datos del cliente</h1></center>
+      </div>
+      <div class="modal-body" id="modal_body">
+ 
+
+				  <!-- Nav tabs -->
+				  <ul class="nav nav-tabs" role="tablist">
+				    <li role="presentation" class="active"><a href="#info" aria-controls="info" role="tab" data-toggle="tab">Información del cliente</a></li>
+				    <li role="presentation"><a href="#new" aria-controls="new" role="tab" data-toggle="tab">Nueva factura</a></li>
+				    <li role="presentation"><a href="#generate_report" aria-controls="generate_report" role="tab" data-toggle="tab">Generar informe</a></li>
+				  </ul>
+
+				  <!-- Tab panes -->
+				  <div class="tab-content">
+				    <div role="tabpanel" class="tab-pane active" id="info">
+				    	
+				    	<div id="invoiceStep"></div>
+
+				    	<div id="infoContent">  					
+					    	<div id="invoices"></div>	
+					    	<div id="clientData"></div>
+				    	</div>
+
+				    </div>
+
+				    <div role="tabpanel" class="tab-pane" id="new">
+				    		
+						</div>
+
+						<div role="tabpanel" class="tab-pane row" id="generate_report">
+							<button class="btn btn-danger" id="initpdf"><i class="fa fa-file-pdf-o" aria-hidden="true"></i> Exportar a pdf</button>
+				    	<div class="box-shadows col-md-12" id="reportDiv">
+				    		<h3 style="float:right">CURICO, Miércoles 6 de septiembre de 2017</h3>
+				    		<br><br>
+								<h4>Constructora Witralen S.A</h4>
+								<h4>RUT: 76.420.007-1</h4>
+								<h4>Avda. Piedra Blanca 154 - Teno</h4>
+								<br><br>
+								<p>Estimado cliente:</p>
+								<p>
+								Según lo observado en nuestra gestión de cobros, se encuentra PENDIENTEs de pagos las facturas según detalle.
+								Las que agradecemos cancelar e indicar comprobantes de pago en caso de haber sido canceladas a la fecha.
+								</p>
+								<p>
+								Recordamos que pueden hacer su pago a través de depósito y/o transferencia bancaria a la siguiente cuenta corriente como corresponda.	
+								</p>
+								<br>
+								<p>Nombre: <b>Asesorias y Servicios Tecnologicos Miguel Esteban Herrera Ureta E.I.R.L.</b>	</p>
+								<p>Banco: <b>Itaú</b></p>
+								<p>Rut: <b>76.623.477-1</b></p>
+								<p>N° Cuenta: <b>02 07 13 28 23</b></p>
+								<br>
+								<p>Nombre: <b>Comercial Servicios y Asesorias M y G Limitada.</b>	</p>
+								<p>Banco: <b>Itaú</b></p>
+								<p>Rut: <b>76.235.643-0</b></p>
+								<p>N° Cuenta: <b>02 06 71 15 32</b></p>
+								<br><br>
+
+								<div id="reportTable">
+									
+								</div>
+								<br><br>
+
+								<p>Atentamente.</p>
+								<p>Departamento de Gestión y Cobros.-</p>
+								<br><br>
+								<center>	<h3>MICHCOM LTDA</h3> </center>
+
+
+				    	</div>
+						</div>
+
+				  </div>
+				</div>
+
+      </div>
+      <div class="modal-footer">
+        <!--<button type="button" class="btn btn-default" data-dismiss="modal">Cerrar</button>-->
+        <!--<button type="button" class="btn btn-primary">Save changes</button>-->
+      </div>
+    </div><!-- /.modal-content -->
+  </div><!-- /.modal-dialog -->
+</div><!-- /.modal -->
+
+
+
+
+
+
+
+
+{{#extend "js"}}
+<script>
+var totalPaid = 0;
+var totalClientPaid = 0;
+var totalPaidCount = 0;
+var totalClientPaidCount = 0;
+var totalOwed = 0;
+var totalClientOwed = 0;
+var totalOwedCount = 0;
+var totalClientOwedCount = 0;
+var datatable;
+var invoiceTable;
+var clientsData = [];
+var invoicesData = [];
+var selectedClient;
+var selectedClientRow;
+var statusSelectedDate;
+
+
+/* CHANGE STATUS VARS */
+
+var statusDataRow;
+var statusSelectedRow;
+var invoiceNumberToChange;
+
+
+jQuery(document).ready(function($) {
+	$('#new').on('change', '#newInvoiceType', function(){
+		if($('#newInvoiceType').val() === 'product') {
+			$( "#newInvoiceBusiness" ).val('Michcom Ltda');
+		}else if ($('#newInvoiceType').val() === 'service') {
+			$( "#newInvoiceBusiness" ).val('Tronit Ltda');
+		}
+		
+	});
+
+	$('#initpdf').click(function() {
+		//console.log($('#reportDiv')[0].innerText)
+		var docDefinition = { content: $('#reportDiv')[0].innerText };
+	  // open the PDF in a new window
+		pdfMake.createPdf(docDefinition).open();
+
+		// print the PDF
+		//pdfMake.createPdf(docDefinition).print();
+
+		// download the PDF
+		pdfMake.createPdf(docDefinition).download('optionalName.pdf');
+	});
+
+	$("a[href='#new']").on('show.bs.tab', function(e) {
+    chargeNewInvoiceForm();
+ 	});
+
+	$.ajax({
+		url: 'api/clients'
+	})
+	.done(function(data) {
+		//console.log(data);
+
+		$.each(data, function(index, val) {
+			var status = '';
+			var invoices = '';
+
+			if (val.amountOwed === 0) {
+				status = 'PAGADO';
+			}else {
+				status = 'PENDIENTE';
+			}
+
+			if (val.invoiceOwed.length > 0) {
+				$.each(val.invoiceOwed, function(index2, val2) {
+					if (index2 === 0) {
+						invoices += val2;	
+					}else {
+						invoices += ' - '+val2;
+					} 
+				});
+			}else {
+				invoices = '-';
+			}
+
+			totalOwed += val.amountOwed; // total adeudado
+
+			clientsData.push({
+				"rev": val._rev,
+				"rut": $.formatRut(val._id),
+				"name": val.name,
+				"status": status,
+				"invoiceOwed": invoices,
+				"amountOwed": '$ '+number_format(val.amountOwed)
+			});
+		});
+
+		chargeTable(clientsData);
+	})
+	.fail(function() {
+		console.log("error");
+	});
+
+	function chargeTable(clientsData) {
+	datatable = $('#table')
+  .addClass( 'nowrap' )
+  .DataTable( {
+  	"iDisplayLength": 100,
+  	"dom": 'Bfrtip',
+    "buttons": [
+        {
+            extend: 'pdfHtml5',
+            customize: function ( doc ) {
+                doc.content.splice( 1, 0, {
+                    margin: [ 0, 0, 0, 12 ],
+                    alignment: 'center',
+                    image: base64logo
+                } );
+            }
+        }
+    ],
+  	"oLanguage": {
+			"sSearch": ""
+		},
+  	"responsive": true,
+    "aaData" : clientsData,
+    "columns" : [ 
+    	{"data" : "name"}, 
+    	{"data" : "rut"},
+      {"data" : "invoiceOwed"}, 
+      {"data" : "status"}, 
+      {"data" : "amountOwed"}
+		],
+		createdRow: function( row, data, dataIndex){
+			//console.log(data[3])
+
+
+			/*
+			if (data[3] != '-') {
+				totalPaid += parseInt(data[3]);
+			}
+			*/
+
+      if( data.status == `PAGADO`){
+      	totalPaidCount++;
+        $(row).css('background', 'rgba(26, 188, 156,0.3)');
+      }else if (data.status == `PENDIENTE`) {
+      	totalOwedCount++;
+      	$(row).css('background', 'rgba(231, 76, 60,0.3)');
+      }else if (data.status == `-`) {
+      	$(row).css('background', 'rgba(149, 165, 166, 0.8)');
+      }
+
+    },
+    initComplete: function(settings, json) {
+	 		$('div.dataTables_filter input').focus();
+    	$('#totalOwed').text('$ '+ number_format(totalOwed) );
+    	//$('#totalPaid').text("$ "+totalPaid);
+    	chargeChart(totalPaidCount, totalOwedCount);
+    	totaoPaidCount = 0;
+    	totalOwedCount = 0;
+  	}
+          
+  });
+
+	$('#table tbody').on( 'dblclick', 'tr', function () {
+		$('#infoContent').css('visibility', 'visible');
+		$('#invoiceStep').empty();
+		$('.nav-tabs a[href="#info"]').tab('show');
+		// Limpiar de puntos y guion para busqueda de cliente en base de datos (id = rut)
+  	var rowData = datatable.row( $(this) ).data();
+  	var replace1 = rowData.rut.split('.').join('');
+  	var replace2 = replace1.replace('-', '');
+
+  	selectedClientRow = datatable.row( $(this) );
+  	chargeModal(replace2);
+	});
+
+	datatable.on( 'draw', function () {
+    var body = $( datatable.table().body() );
+
+    body.unhighlight();
+    body.highlight( datatable.search() );  
+  });
+
+  $('.dataTables_filter input').attr("placeholder", "Buscador");
+}
+
+
+function chargeInvoiceTable(client) {
+	invoicesData = [];
+	totalClientPaidCount = 0;
+	totalClientOwedCount = 0;
+	totalClientPaid = 0;
+	totalClientOwed = 0;
+
+	$.each(client.invoices, function(index, val) {
+
+		if (val.status === 'PENDIENTE') {
+			totalClientOwed += val.amount;
+		}else if (val.status === 'PAGADO') {
+			totalClientPaid += val.amount;
+		}
+
+		invoicesData.push({
+			"invoice": val.invoice,
+			"date": val.date,
+			"amount": '$ '+number_format(val.amount),
+			"description": val.description,
+			"status": val.status,
+			"business": val.business,
+			"iva": '$ '+number_format(val.iva),
+		});
+	});
+
+	$('#invoices').empty();
+	$('#invoices').html(`
+	<table id="invoiceTable" class="display" cellspacing="0" width="100%">
+	  <thead>
+	      <tr>
+          <th>N° Factura:</th>
+          <th>Fecha:</th>
+          <th>Monto:</th>
+          <th>Descripción:</th>
+          <th>Empresa:</th>
+          <th>Estado:</th>
+          <th>Iva:</th>
+	      </tr>
+	  </thead>		 
+	</table>`);
+
+
+	invoiceTable = $('#invoiceTable')
+	  .addClass( 'nowrap' )
+	  .DataTable({
+	  	"iDisplayLength": 100,
+	  	"dom": 'Bfrtip',
+		  "buttons": [
+		      {
+		          extend: 'pdfHtml5',
+		          customize: function ( doc ) {
+		              doc.content.splice( 1, 0, {
+		                  margin: [ 0, 0, 0, 12 ],
+		                  alignment: 'center',
+		                  image: base64logo
+		              } );
+		          }
+		      }
+    ],
+	  	"oLanguage": {
+				"sSearch": ""
+			},
+			"order": [[0, "desc"]],
+	  	"responsive": true,
+	    "aaData" : invoicesData,
+	    "columns" : [
+	    	{"data" : "invoice"}, 
+	    	{"data" : "date"},
+	      {"data" : "amount"},  
+	      {"data" : "description"},
+	      {"data" : "business"}, 
+	      {"data" : "status"},
+	      {"data" : "iva"},
+			],
+			"columnDefs": [
+            {
+                "targets": [ 6 ],
+                "visible": false,
+                "searchable": false
+            }
+        ],
+			createdRow: function( row, data, dataIndex){
+				if( data.status == `PAGADO`){
+					totalClientPaidCount++;
+        	$(row).css('background', 'rgba(26, 188, 156,0.3)');
+	      }else if (data.status == `PENDIENTE`) {
+	      	totalClientOwedCount++;
+	      	$(row).css('background', 'rgba(231, 76, 60,0.3)');
+	      }
+	    },
+	    initComplete: function(settings, json) {
+	 			$('div.dataTables_filter input').focus();
+	 			chargeClientCharts(totalClientPaidCount, totalClientOwedCount);
+	 			$('#clientPaid').text("$ " + number_format(totalClientPaid));
+	 			$('#clientOwed').text("$ " + number_format(totalClientOwed));
+	  	}
+	          
+	  });
+	  $('.dataTables_filter input').attr("placeholder", "Buscador");
+
+	  
+	  $('#invoiceTable tbody').on('dblclick', 'tr', function () {                            //////////////VOLVER AQUI
+	  	statusDataRow = invoiceTable.row( $(this) ).data();
+      	statusSelectedRow = invoiceTable.row( $(this)  );
+      	invoiceNumberToChange = statusDataRow.invoice;
+
+      if(statusDataRow.status === 'PENDIENTE') {
+		  	$('#infoContent').css('visibility', 'hidden');
+		  	$('#invoiceStep').html(`
+		  		<a id="goBack" class="btn btn-default"><i class="fa fa-arrow-left" aria-hidden="true"></i></a>
+		  		<center>
+		  		<h1>N° de factura: <b>${statusDataRow.invoice}</b></h1>
+		  		<h1>Monto total: <b>${statusDataRow.amount}</b></h1>
+		  		<h2>Iva: <b>${statusDataRow.iva}</b></h2>
+		  		<h1>Descripción:</h1>
+		  		<h2><b>${statusDataRow.description}</b></h2>
+		  		<h1>Fecha de pago de factura</h1>
+		  			<input style="font-size:30px; width:200px;" type="text" name="invoiceDate" value="${moment.tz('America/Santiago').format('MM-DD-YYYY')}" /> 
+		  			<br><br><br>
+		  			<button class="btn btn-success btn-block"><h2> <i class="fa fa-retweet" aria-hidden="true"></i>  Cambiar estado a PAGADO</h2></button>
+		  		</center>
+		  	`);
+
+		  	$('input[name="invoiceDate"]').daterangepicker({
+	        singleDatePicker: true,
+	        showDropdowns: true
+		    });
+
+		    $('input[name="invoiceDate"]').focus();
+	    }else if (statusDataRow.status === 'PAGADO') {
+	    	$('#infoContent').css('visibility', 'hidden');
+	    	$('#invoiceStep').html(`
+	    		<a id="goBack" class="btn btn-default"><i class="fa fa-arrow-left" aria-hidden="true"></i></a>
+		  		<center>
+		  		<h1>N° de factura: <b>${statusDataRow.invoice}</b></h1>
+				<h1>Monto total: <b>${statusDataRow.amount}</b></h1>
+		  		<h2>Iva: <b>${statusDataRow.iva}</b></h2>
+		  		<h1>Descripción:</h1>
+		  		<h2><b>${statusDataRow.description}</b></h2>
+		  		<h1>Razón de anulación</h1> 
+		  		<textarea class="form-control" rows="5" id="cancellation_reason"></textarea>
+		  			<br>
+		  			<button class="btn btn-danger btn-block"><h2> <i class="fa fa-retweet" aria-hidden="true"></i>  Cambiar estado a PENDIENTE</h2></button>
+		  		</center>
+		  	`);
+
+	    }
+
+	  });
+
+
+
+	  $('#invoiceStep').on( 'click', '#goBack', function () {
+	  	$('#infoContent').css('visibility', 'visible');
+	  	$('#invoiceStep').empty();
+	  }); 
+
+	  $('#invoiceStep').on( 'click', 'button', function () { 
+	  	var invoicePaidDate;
+	  	var postData;
+	  	var reason;
+
+	  	/* FALTA VALIDAR LENGTH*/
+	  	if(statusDataRow.status === 'PAGADO') {
+	  		reason = $('#cancellation_reason').val();
+
+	  		if(reason.length === 0) {
+	  			reason = 'Sin razón asignada';
+	  		}
+
+	  		postData = { invoice: invoiceNumberToChange, reason: reason};
+
+	  	}else if (statusDataRow.status === 'PENDIENTE') {
+	  		invoicePaidDate = $('input[name="invoiceDate"]').val();
+	  		
+	  		if(invoicePaidDate.length === 0) {
+	  			invoicePaidDate = moment.tz('America/Santiago').format('DD-MM-YYYY');
+	  		}
+
+	  		postData = { invoice: invoiceNumberToChange, date: invoicePaidDate };
+	  	}
+
+	  	$('#infoContent').css('visibility', 'visible');
+	  	$('#invoiceStep').empty();
+
+      $.ajax({
+      	url: 'api/changeInvoiceState',
+      	type: 'POST',
+      	data: postData
+      })
+      .done(function(data) {
+      	statusSelectedRow.remove().draw();
+      	if(data.status === 'PENDIENTE') {
+      	
+      		
+      		invoiceTable.row.add( {
+						"invoice": statusDataRow.invoice,
+		        "date": statusDataRow.date,
+		        "amount": statusDataRow.amount,
+		        "description": statusDataRow.description,
+		        "business": statusDataRow.business,
+		        "status": 'PENDIENTE',
+		        "iva": statusDataRow.iva
+					}).draw();
+
+      		var filter1 = statusDataRow.amount.replace('$','');
+      		var filter2 = filter1.split('.').join('');
+      		totalClientPaid -= parseInt(filter2);
+					totalClientOwed += parseInt(filter2); 
+					totalPaid -= parseInt(filter2);
+					totalOwed += parseInt(filter2);
+					totalClientPaidCount--;
+
+					chargeClientCharts(totalClientPaidCount, totalClientOwedCount);
+					$('#clientPaid').text('$ '+ number_format(totalClientPaid));
+					$('#clientOwed').text('$ '+ number_format(totalClientOwed));
+
+					$('#totalOwed').text('$ '+ number_format(totalOwed));
+
+					reloadClientRow(); /////////////////////////////////////////////////////////////////////////////////////////
+						
+      	}else if (data.status === 'PAGADO') {
+      		invoiceTable.row.add( {
+						"invoice": statusDataRow.invoice,
+		        "date": invoicePaidDate,
+		        "amount": statusDataRow.amount,
+		        "description": statusDataRow.description,
+		        "business": statusDataRow.business,
+		        "status": 'PAGADO',
+		        "iva": statusDataRow.iva
+					}).draw();
+
+
+      		var filter_1 = statusDataRow.amount.replace('$','');
+      		var filter_2 = filter_1.split('.').join(''); 
+					totalClientPaid += parseInt(filter_2);
+					totalClientOwed -= parseInt(filter_2);
+					totalPaid += parseInt(filter_2);
+					totalOwed -= parseInt(filter_2);
+					//totalClientPaidCount++;
+					totalClientOwedCount--;
+
+
+
+					chargeClientCharts(totalClientPaidCount, totalClientOwedCount);
+					$('#clientPaid').text('$ '+ number_format(totalClientPaid));
+					$('#clientOwed').text('$ '+ number_format(totalClientOwed));
+
+					$('#totalOwed').text('$ '+ number_format(totalOwed));
+
+
+
+					reloadClientRow(); //////////////////////////////////////////////////////////////////////////					
+      	}
+
+
+      })
+      .fail(function() {
+      	console.log("error al cambiar estado de factura");
+      });
+	    
+	  });  
+
+}
+
+
+function chargeNewInvoiceForm() {
+	$('#new').html(` 
+		<div class="box-shadows form-horizontal">
+
+			<fieldset>
+				<!-- Form Name -->
+				<center><legend>Ingresar nueva factura al sistema</legend></center>
+
+
+				<div class="form-group">
+				  <label class="col-md-4 control-label">Número de factura</label>  
+				  <div class="col-md-4 inputGroupContainer">
+				  <div class="input-group">
+				  <span class="input-group-addon"><i class="glyphicon glyphicon-asterisk"></i></span>
+				  <input id="newInvoiceNumber" placeholder="N° de factura" class="form-control" type="number" min="1">
+				    </div>
+				  </div>
+				</div>
+
+
+				<div class="form-group">
+				  <label class="col-md-4 control-label" >Monto</label> 
+				    <div class="col-md-4 inputGroupContainer">
+				    <div class="input-group">
+				  <span class="input-group-addon"><i class="glyphicon glyphicon-usd"></i></span>
+				  <input id="newInvoiceAmount" placeholder="Monto de la factura" class="form-control" type="number" min="1">
+				    </div>
+				  </div>
+				</div>
+
+				   
+				<div class="form-group"> 
+				  <label class="col-md-4 control-label">Tipo de factura</label>
+				  <div class="col-md-4 selectContainer">
+				  	<div class="input-group">
+				      <span class="input-group-addon"><i class="glyphicon glyphicon-list"></i></span>
+					    <select id="newInvoiceType" class="form-control selectpicker" >
+					      <option selected value="product">Producto</option>
+					      <option value="service">Servicio</option>
+					    </select>
+				  	</div>
+					</div>
+				</div>
+
+				<div class="form-group"> 
+				  <label class="col-md-4 control-label">Razón social</label>
+				  <div class="col-md-4 selectContainer">
+				    <div class="input-group">
+				      <span class="input-group-addon"><i class="glyphicon glyphicon-list"></i></span>
+					    <select id="newInvoiceBusiness" class="form-control selectpicker" disabled >
+					      <option selected value="Michcom Ltda">Michcom Ltda</option>
+					      <option value="Tronit Ltda">Tronit Ltda</option>
+					    </select>
+				  	</div>
+					</div>
+				</div>
+
+  
+				<div class="form-group">
+				  <label class="col-md-4 control-label">Descripción</label>
+				  <div class="col-md-4 inputGroupContainer">
+			    	<div class="input-group">
+			        <span class="input-group-addon"><i class="glyphicon glyphicon-pencil"></i></span>
+			        <textarea class="form-control" id="newInvoiceDescription" placeholder="Descripción de la factura"></textarea>
+			  		</div>
+				  </div>
+				</div>
+
+				<div style="display: none;" id="form_messages"></div>
+
+				<!-- Button -->
+				<div class="form-group">
+				  <label class="col-md-4 control-label"></label>
+				  <div class="col-md-4">
+				    <button id="sendNewInvoice" class="btn btn-primary" >Crear <span class="glyphicon glyphicon-send"></span></button>
+				  </div>
+				</div>
+
+			</fieldset>
+
+		</div>
+	`);
+	
+}
+
+function reloadClientRow() {
+	selectedClientRow.remove().draw();
+	var selectedRut = selectedClient.rut;
+	var filter1 = selectedRut.split('.').join('');
+	var filter2 = filter1.replace('-', '');
+
+	$.ajax({
+		url: 'api/getClient',
+		type: 'POST',
+		data: {rut: filter2},
+	})
+	.done(function(data) {
+		var status = '';
+		var invoices = '';
+
+		if(data.amountOwed === 0) {
+			status = 'PAGADO';
+		}	else {
+			status = 'PENDIENTE';
+		}
+
+		if (data.invoiceOwed.length > 0) {
+				$.each(data.invoiceOwed, function(index, val) {
+					if (index === 0) {
+						invoices += val;	
+					}else {
+						invoices += ' - '+val;
+					} 
+				});
+		}else {
+			invoices = '-';
+		}
+
+		var newClientRow = datatable.row.add( {
+			"name": data.name,
+			"rut": $.formatRut(data._id),
+			"invoiceOwed": invoices,
+			"status": status,
+			"amountOwed": '$ '+number_format(data.amountOwed)
+		}).draw();
+
+		selectedClientRow = newClientRow;
+		//selectedClient = selectedClientRow.data();
+		//console.log(selectedClient);
+		
+		totalPaidCount = 0;
+		totalOwedCount = 0;
+		datatable
+    .column( 3 )
+    .data()
+    .each( function ( value, index ) {
+    	//console.log(value);
+    	
+     	if (value === 'PAGADO') {
+     		totalPaidCount++;
+     	}else if (value === 'PENDIENTE') {
+     		totalOwedCount++;
+     	}
+     	
+    });
+    
+    //console.log(totalPaidCount);
+    //console.log(totalOwedCount);
+
+    chargeChart(totalPaidCount, totalOwedCount);
+
+
+	})
+	.fail(function() {
+		console.log("error al recargar client row");
+	});
+}
+
+function chargeModal(id) {
+	jQuery.noConflict();
+  $('#clientInfo').modal('show');
+  $.ajax({
+  	url: 'api/client',
+  	type: 'POST',
+  	data: {rut: id},
+  })
+  .done(function(data) {
+  	var client = data;
+  	console.log(data)
+  	selectedClient = client;
+
+  	//console.log(selectedClient);
+  	//console.log(selectedClientRow);
+
+  	$('#modal_title').html(`<center><h1>${data.name}</h1></center>`);
+  	
+  	$('#clientData').html(`
+
+  		<br>		
+
+  		<div class="row">
+				<div class="col-md-6 col-xs-12 box-shadows" style="height:300px;">
+					<center>	<h3>Monto adeudado PENDIENTE</h3> </center>
+					<div style="height: 5px; width:100%; background-color:rgba(231, 76, 60,0.3);"></div>
+					<center> <h2 id="clientOwed"></h2> </center>
+					<br>
+					<center>	<h3>Ganancias totales</h3> </center>
+					<div style="height: 5px; width:100%; background-color:rgba(26, 188, 156,0.3);"></div>
+					<center> <h2 id="clientPaid"></h2> </center>
+					
+				</div>
+
+		
+
+				<div class="col-md-6 col-xs-12 box-shadows">
+						<div id="totalClientChart" style="height: 300px; margin: 0 auto"></div>
+				</div>
+  		</div>
+
+  		<br>
+
+  		<div class="row">
+				<div class="col-md-4 col-xs-12 box-shadows">
+					<center>	<h2>Rut</h2> </center>
+					<center> <h1><b> ${$.formatRut(client.rut)} </b></h1> </center>
+				</div>
+				<div class="col-md-4 col-xs-12 box-shadows">
+					<center>	<h2>dirección</h2> </center>
+					<center> <h3> ${client.address} </h3> </center>
+				</div>
+				<div class="col-md-4 col-xs-12 box-shadows">
+					<center>	<h2>Correo/s</h2> </center>
+					<ul id="email-list" class="list-group">
+					</ul>
+				</div>
+  		</div>
+
+  	`);
+  	
+  	$('#email-list').empty();
+  	$.each(client.emails, function(index, val) {
+  		$('#email-list').append('<li class="list-group-item">'+val+'</li>');
+  	});
+  	
+
+  	chargeInvoiceTable(client);
+	  
+
+  })
+  .fail(function() {
+  	console.log("error");
+  });
+  
+  
+}
+
+function number_format(amount, decimals) {
+
+    amount += ''; // por si pasan un numero en vez de un string
+    amount = parseFloat(amount.replace(/[^0-9\.]/g, '')); // elimino cualquier cosa que no sea numero o punto
+
+    decimals = decimals || 0; // por si la variable no fue fue pasada
+
+    // si no es un numero o es igual a cero retorno el mismo cero
+    if (isNaN(amount) || amount === 0) 
+        return parseFloat(0).toFixed(decimals);
+
+    // si es mayor o menor que cero retorno el valor formateado como numero
+    amount = '' + amount.toFixed(decimals);
+
+    var amount_parts = amount.split('.'),
+        regexp = /(\d+)(\d{3})/;
+
+    while (regexp.test(amount_parts[0]))
+        amount_parts[0] = amount_parts[0].replace(regexp, '$1' + '.' + '$2');
+
+    return amount_parts.join('.');
+}
+
+
+function chargeChart(paid, owed) {
+	Highcharts.chart('totalChart', {
+    chart: {
+        plotBackgroundColor: null,
+        plotBorderWidth: null,
+        plotShadow: false,
+        type: 'pie'
+    },
+    title: {
+        text: `Clientes`
+    },
+    subtitle: {
+        text: `PAGADOs: ${paid} - PENDIENTEs: ${owed}`
+    },
+    tooltip: {
+        pointFormat: '{series.name}: <b>{point.percentage:.1f}%</b>'
+    },
+    plotOptions: {
+        pie: {
+            allowPointSelect: true,
+            cursor: 'pointer',
+            dataLabels: {
+                enabled: true,
+                format: '<b>{point.name}</b>: {point.percentage:.1f} %',
+                style: {
+                    color: (Highcharts.theme && Highcharts.theme.contrastTextColor) || 'black'
+                }
+            }
+        }
+    },
+    series: [{
+        name: 'porcentaje',
+        colorByPoint: true,
+        data: [{
+            name: 'PAGADO',
+            y: paid,
+            color: 'rgba(26, 188, 156,0.3)'
+        }, {
+            name: 'PENDIENTE',
+            y: owed,
+            color: 'rgba(231, 76, 60,0.3)'
+        }]
+    }]
+});
+
+
+	/*
+	Highcharts.chart('totalChart', {
+    chart: {
+        type: 'column'
+    },
+    title: {
+        text: 'Clientes'
+    },
+    xAxis: {
+        categories: [
+            ''
+        ],
+        crosshair: true
+    },
+    yAxis: {
+        min: 0,
+        title: {
+            text: 'Cantidad'
+        }
+    },
+    tooltip: {
+        headerFormat: '<span style="font-size:10px">{point.key}</span><table>',
+        pointFormat: '<tr><td style="color:{series.color};padding:0">{series.name}: </td>' +
+            '<td style="padding:0"><b>{point.y}</b></td></tr>',
+        footerFormat: '</table>',
+        shared: true,
+        useHTML: true
+    },
+    plotOptions: {
+        column: {
+            pointPadding: 0.2,
+            borderWidth: 0
+        }
+    },
+    series: [{
+        name: 'PAGADO',
+        data: [paid],
+        color: '#1ABC9C'
+
+    }, {
+        name: 'PENDIENTE',
+        data: [owed],
+        color: '#E74C3C'
+
+    }]
+});
+*/	
+}
+
+function chargeClientCharts(paid, owed) {
+	Highcharts.chart('totalClientChart', {
+    chart: {
+        plotBackgroundColor: null,
+        plotBorderWidth: null,
+        plotShadow: false,
+        type: 'pie'
+    },
+    title: {
+        text: `Facturas`
+    },
+    subtitle: {
+        text: `Pagadas: ${paid} - PENDIENTEs: ${owed}`
+    },
+    tooltip: {
+        pointFormat: '{series.name}: <b>{point.percentage:.1f}%</b>'
+    },
+    plotOptions: {
+        pie: {
+            allowPointSelect: true,
+            cursor: 'pointer',
+            dataLabels: {
+                enabled: true,
+                format: '<b>{point.name}</b>: {point.percentage:.1f} %',
+                style: {
+                    color: (Highcharts.theme && Highcharts.theme.contrastTextColor) || 'black'
+                }
+            }
+        }
+    },
+    series: [{
+        name: 'porcentaje',
+        colorByPoint: true,
+        data: [{
+            name: 'PAGADO',
+            y: paid,
+            color: 'rgba(26, 188, 156,0.3)'
+        }, {
+            name: 'PENDIENTE',
+            y: owed,
+            color: 'rgba(231, 76, 60,0.3)'
+        }]
+    }]
+	});
+}
+
+$('#new').on('click', '#sendNewInvoice', function() {
+	$('#infoContent').css('visibility', 'visible');
+	$('#invoiceStep').empty();
+	$('#sendNewInvoice').prop('disabled', true);
+
+	setTimeout(function(){
+		$('#sendNewInvoice').prop('disabled', false);
+	}, 3000);
+
+	$('#form_messages').empty();
+
+	var step = 0;
+	var newInvoiceNumber = parseInt($('#newInvoiceNumber').val());
+	var newInvoiceAmount = parseInt($('#newInvoiceAmount').val());
+	var newInvoiceType = $('#newInvoiceType').val();
+	var newInvoiceBusiness = $('#newInvoiceBusiness').val();
+	var newInvoiceDescription = $('#newInvoiceDescription').val();
+	var iva = parseInt(newInvoiceAmount * 0.19);
+
+	if(newInvoiceType === 'service') {
+		iva = 0;
+		//newInvoiceAmount = parseInt(newInvoiceAmount+iva);
+		//newInvoiceDescription = "+ $"+number_format(iva)+" c/iva. "+ newInvoiceDescription;
+	}
+	
+	//var fullDescription = "+ $"+number_format(iva)+" iva incluido. "+ newInvoiceDescription;
+	//var fullAmount = newInvoiceAmount+iva;
+
+
+	if (newInvoiceNumber > 0 && Number.isInteger(newInvoiceNumber)) {
+		$('#newInvoiceNumber').css('border', '1px solid green');
+		step++;
+	}else {
+		$('#newInvoiceNumber').css('border', '1px solid red');
+	}
+
+	if (newInvoiceAmount > 0 && Number.isInteger(newInvoiceAmount)) {
+		$('#newInvoiceAmount').css('border', '1px solid green');
+		step++;
+	}else {
+		$('#newInvoiceAmount').css('border', '1px solid red');
+	}
+
+	if (newInvoiceDescription.length >= 5 && newInvoiceDescription.length <= 500) {
+		$('#newInvoiceDescription').css('border', '1px solid green');
+		step++;
+	}else {
+		$('#newInvoiceDescription').css('border', '1px solid red');
+	}
+
+	$('#newInvoiceType').css('border', '1px solid green');
+	$('#newInvoiceBusiness').css('border', '1px solid green');
+
+	if(step === 3) {
+		
+		$.ajax({
+			url: 'api/invoice',
+			type: 'POST',
+			data: {rut: selectedClient.rut, invoice: newInvoiceNumber, business: newInvoiceBusiness, amount: newInvoiceAmount, invoice_type: newInvoiceType, description: newInvoiceDescription, date: '-', iva: iva}
+		})
+		.done(function(data) {
+	
+			totalOwed += newInvoiceAmount;
+			$('#totalOwed').text('$ '+ number_format(totalOwed) );
+			//chargeClientCharts(totalClientPaidCount, totalClientOwedCount);
+
+			if (data.error) {
+				$('#newInvoiceNumber').css('border', '1px solid red');
+				$('#form_messages').html('<div class="alert alert-danger"><center>'+data.error+'</center></div>');
+				$('#form_messages').slideDown({ opacity: "show" }, "slow");
+				$('#sendNewInvoice').prop('disabled', false);
+				
+			}else if (data.ok) {
+				$('#form_messages').html('<div class="alert alert-success"><center>'+data.ok+'</center></div>');
+				$('#form_messages').slideDown({ opacity: "show" }, "slow");
+
+
+				setTimeout(function() {
+					$('.nav-tabs a[href="#info"]').tab('show');
+
+					setTimeout(function() {
+						var newRowAdded = invoiceTable.row.add( {
+							"invoice": newInvoiceNumber,
+					        "date": '-',
+					        "amount": '$ '+ number_format(newInvoiceAmount),
+					        "description": newInvoiceDescription,
+					        "business": newInvoiceBusiness,
+					        "status": 'PENDIENTE',
+					        "iva": '$ '+ number_format(iva)
+						}).draw().node();
+
+						$( newRowAdded ).css( 'color', '#f1c40f' );
+
+				    setTimeout(function(){
+				    	$( newRowAdded ).css( 'color', '#333339' ) ;
+				    }, 1000);
+
+				    console.log(selectedClient);
+
+				    selectedClient.invoices.push({
+				    	amount: newInvoiceAmount,
+				    	business: newInvoiceBusiness,
+				    	date: '-',
+				    	description: newInvoiceDescription,
+				    	invoice: newInvoiceNumber,
+				    	invoice_type: newInvoiceType,
+				    	status: 'PENDIENTE',
+				    	_id: data.id
+				    });
+
+				    totalClientOwed += newInvoiceAmount;
+				    reloadClientRow();
+
+				    $('#clientOwed').text("$ " + number_format(totalClientOwed));
+				    chargeClientCharts(totalClientPaidCount, totalClientOwedCount);
+
+
+					}, 500);
+
+
+					/* REINICIAR FORMULARIO */
+					$('#newInvoiceNumber').val('');
+					$('#newInvoiceNumber').css('border', '1px solid #CCCCCC');
+					$('#newInvoiceAmount').val('');
+					$('#newInvoiceAmount').css('border', '1px solid #CCCCCC');
+					$('#newInvoiceType').css('border', '1px solid #CCCCCC');
+					$('#newInvoiceDescription').val('');
+					$('#newInvoiceDescription').css('border', '1px solid #CCCCCC');
+					$('#sendNewInvoice').prop('disabled', false);
+					$('#form_messages').empty();
+
+
+				}, 1000);
+        
+
+			}
+		})
+		.fail(function() {
+			console.log("error al crear factura");
+		});
+		
+		
+	}
+
+
+
+
+
+});
+
+
+
+/*
+$('#new_invoice_form').bootstrapValidator({
+  // To use feedback icons, ensure that you use Bootstrap v3.1.0 or later
+  feedbackIcons: {
+      valid: 'glyphicon glyphicon-ok',
+      invalid: 'glyphicon glyphicon-remove',
+      validating: 'glyphicon glyphicon-refresh'
+  },
+  fields: {
+      number: {
+        validators: {
+          stringLength: {
+            min: 1,
+          },
+          notEmpty: {
+          	message: 'Ingrese un número de factura'
+          }
+        }
+      },
+      amount: {
+        validators: {
+          stringLength: {
+            min: 1,
+          },
+          notEmpty: {
+            message: 'Ingrese un monto de factura'
+          }
+        }
+      },
+      type: {
+        validators: {
+          notEmpty: {
+            message: 'Seleccione un tipo de factura'
+          }
+        }
+      },
+      description: {
+        validators: {
+          stringLength: {
+            min: 5,
+            max: 500,
+            message:'Ingrese un minimo de 5 caracteres y un maximo de 500'
+          },
+          notEmpty: {
+            message: 'Ingrese una descripcion de la factura'
+          }
+        }
+      }
+    }
+  })
+  .on('success.form.fv','submit', function(e) {
+  	// Prevent form submission
+  	e.preventDefault();
+
+    $('#success_message').slideDown({ opacity: "show" }, "slow"); // Do something ...
+    $('#new_invoice_form').data('bootstrapValidator').resetForm();
+
+    // Get the form instance
+    var $form = $(e.target);
+
+    // Get the BootstrapValidator instance
+    var bv = $form.data('bootstrapValidator');
+
+    // Use Ajax to submit form data
+    $.post($form.attr('action'), $form.serialize(), function(result) {
+        console.log(result);
+    }, 'json');
+  });
+*/
+});
+
+
+
+</script>
+
+{{/extend}}
+

@@ -1,0 +1,194 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+
+  {{! Document Layout}}
+  
+  <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+  <!-- Meta, title, CSS, favicons, etc. -->
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  
+  <title>Comercial Servicios Asesorias MYG LTDA - Michcom </title>
+  
+  <link rel="stylesheet" href="/public/nprogress/nprogress.css">
+  <script src="/public/nprogress/nprogress.js"></script>
+  <script>
+    NProgress.start();
+  </script>
+  <link rel="stylesheet" href="public/bootstrap/css/bootstrap.cosmo.min.css">
+  <link rel="stylesheet" href="public/jqueryUI/jquery-ui.min.css">
+  <link rel="stylesheet" href="public/font-awesome/css/font-awesome.min.css">
+  <link rel="stylesheet" href="public/css/pushy.css">
+  <link rel="stylesheet" href="public/css/demo.css">
+  <link rel="stylesheet" href="public/css/appbutton.css">
+  <link rel="stylesheet" href="public/css/sweetalert2.min.css">
+  <link rel="stylesheet" href="public/css/datatables.min.css">
+  <link rel="stylesheet" href="public/css/dataTables.searchHighlight.css">
+  <link rel="stylesheet" href="public/css/bootstrapValidator.min.css">
+  <link rel="stylesheet" href="public/css/buttons.dataTables.min.css">
+  <link rel="stylesheet" href="public/css/animate.css">
+  <link rel="stylesheet" type="text/css" href="//cdn.jsdelivr.net/bootstrap.daterangepicker/2/daterangepicker.css" />
+  <style>
+  p {
+    font-weight: normal;
+  }
+
+  td {
+    font-weight: normal;
+  }
+
+  th { 
+    font-size: 22px;
+    text-align: center;
+  }
+
+  td {
+
+    border-left:1px solid rgba(149, 165, 166,0.8); 
+    font-size: 20px; 
+    /*text-align: center;*/
+    -webkit-touch-callout: none; /* iOS Safari */
+    -webkit-user-select: none; /* Safari */
+    -khtml-user-select: none; /* Konqueror HTML */
+    -moz-user-select: none; /* Firefox */
+    -ms-user-select: none; /* Internet Explorer/Edge */
+    user-select: none; /* Non-prefixed version, currently
+    supported by Chrome and Opera */
+  }
+
+  #table tbody tr {
+    cursor: pointer;
+  }
+
+  #table tbody tr:hover {
+    background: #3CB2F5!important;
+  }
+
+  #invoiceTable tbody tr:hover {
+    background: #3CB2F5!important;
+    cursor: pointer;
+  }
+
+  #totalOwed {
+    font-size: 50px;
+  }
+
+  tbody tr td {
+    border-bottom: 1px solid #2c3e50;
+  }
+
+  .dataTables_filter input {
+    height: 33px;
+    font-size: 20px; 
+    float: left !important;
+  }
+
+  #success_message{ display: none;}
+
+  #new .form-group {
+    margin: 5px;
+  }
+
+</style>
+  {{#block "css"}}
+  {{/block}}
+</head>
+
+<body style="background: #F6F6F6">
+  <!-- Pushy Menu -->
+  <nav class="pushy pushy-left" data-focus="#first-link">
+
+    <div class="pushy-content">
+      <div class="top-menu">
+        <span>
+          <i style="margin-top:15px; margin-left:20px;" class="fa fa-5x fa-user-circle-o" aria-hidden="true"></i>
+        </span>
+        <p style="color:white; margin-top:-60px; margin-left:100px; font-size:20px; text-transform: uppercase;">
+          {{ credentials.role }}
+        </p>
+        <p style="color:white; margin-top:-10px; margin-left:100px; font-size:20px; text-transform: uppercase;">
+          <b>{{ credentials.name }} {{ credentials.lastname }}<b>
+        </p>
+        <br>
+
+      </div>
+        <ul>
+            <li class="pushy-link"><a href="/"><i class="fa fa-2x fa-home" aria-hidden="true"></i>&nbsp;&nbsp;&nbsp;&nbsp; HOME</a></li>
+            <li class="pushy-link"><a href="/clients"><i class="fa fa-2x fa-building" aria-hidden="true"></i>&nbsp;&nbsp;&nbsp;&nbsp; CLIENTES</a></li>
+            <!--<li class="pushy-link"><a href="/users"><i class="fa fa-2x fa-user" aria-hidden="true"></i>&nbsp;&nbsp;&nbsp;&nbsp; USUARIOS</a></li>-->
+        </ul>
+    </div>
+
+    <div style="position:absolute; bottom:70px; height: 10px; width:100%; background-color:#1E202C;"></div>
+
+    <span>
+      <a style="position:absolute; bottom:0px; margin-left:50px;" href="/logout">Cerrar Sesión <i class="fa fa-2x fa-power-off" aria-hidden="true"></i></a>
+    </span>
+
+
+  </nav>
+
+  <!-- Site Overlay -->
+  <div class="site-overlay"></div>
+
+  <div id="container">
+    <div style="background: #FFFFFF; height: 130px; width: 100%; margin-bottom: 20px;" class="box-shadows">
+      <div class="row" style="padding-top: 40px">
+        <div class="col-md-2 col-xs-3">
+          <a class="menu-btn">
+            <i class="fa fa-3x fa-bars" aria-hidden="true"></i>
+          </a>
+        </div>
+        <div class="col-md-10 col-xs-9">
+          <img class="img-responsive" src="public/images/logo2.png"  alt="" style="margin-bottom:30px; margin-bottom:10px; max-height: 70px;">    
+        </div>
+      </div>
+    </div>
+    {{{content}}}
+  </div>
+
+  <script src="public/js/jquery.js"></script>
+  <script src="public/jqueryUI/jquery-ui.min.js"></script>
+  <script src="public/js/datatables.min.js"></script>
+  <script src="public/bootstrap/js/bootstrap.min.js"></script>
+  <script src="public/js/moment.js"></script>
+  <script src="public/js/moment-timezone.min.js"></script>
+  <script src="public/js/pushy.js"></script>
+  <script src="public/js/sweetalert2.min.js"></script>
+  <script src="public/js/highcharts.js"></script>
+  <script src="public/js/exporting.js"></script>
+  <script src="public/js/jquery.highlight.js"></script>
+  <script src="public/js/dataTables.searchHighlight.min.js"></script>
+  <script src="public/js/jquery.maskedinput.min.js"></script>
+  <script src="public/js/jquery.rut.min.js"></script>
+  <script src="public/js/dataTables.buttons.min.js"></script>
+  <script src="public/js/pdfmake.min.js"></script>
+  <script src="public/js/vfs_fonts.js"></script>
+  <script src="public/js/buttons.html5.min.js"></script>
+  <script src="public/images/base64_logo.js"></script>
+
+  <script type="text/javascript" src="//cdn.jsdelivr.net/bootstrap.daterangepicker/2/daterangepicker.js"></script>
+
+  
+  <script>
+  function getTime(c) {
+    if(c) {
+      return moment.tz(c).format('YYYY-MM-DDTHH:mm:ss.SSSSS');
+    }else {
+      return moment.tz('America/Santiago').format('YYYY-MM-DDTHH:mm:ss.SSSSS');
+    }
+  }
+  </script>
+
+  {{#block "js"}}
+  {{/block}}
+  
+  <script>
+    NProgress.done();
+  </script>
+</body>
+
+</html>

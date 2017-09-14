@@ -1,0 +1,33 @@
+{
+  "name": "michcom",
+  "version": "0.0.1",
+  "description": "",
+  "main": "app.js",
+  "scripts": {
+    "test": "babel-watch app.js",
+    "start": "pm2 start app.js --interpreter babel-node --name michcom",
+    "stop": "pm2 stop michcom",
+    "restart": "npm stop && npm start"
+  },
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "boom": "^5.2.0",
+    "cloudant": "^1.8.0",
+    "dotenv": "^4.0.0",
+    "handlebars": "^4.0.10",
+    "handlebars-extend-block": "^1.0.0",
+    "hapi": "^16.5.2",
+    "hapi-auth-cookie": "^7.0.0",
+    "inert": "^4.2.1",
+    "joi": "^10.6.0",
+    "moment": "^2.18.1",
+    "moment-timezone": "^0.5.13",
+    "vision": "^4.1.1"
+  },
+  "devDependencies": {
+    "babel-cli": "^6.26.0",
+    "babel-preset-es2015": "^6.24.1",
+    "babel-watch": "^2.0.7"
+  }
+}

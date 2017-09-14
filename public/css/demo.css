@@ -1,0 +1,141 @@
+html, body {
+  overflow-x: hidden;
+}
+
+/* Lists */
+ul {
+  margin: 0;
+  padding: 0;
+}
+
+/* Container */
+#container {
+  position: relative;
+}
+
+/* Menu Button */
+.menu-btn {
+  color:#E8E8E8;
+  cursor: pointer;
+  margin-left: 50px !important;
+}
+
+.box-shadows {
+  box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19);
+}
+
+.top-menu {
+  height: 130px !important;
+  background-color: #3CB2F5;
+  border:2px;
+  border-style: solid;
+  border-color: #3CB2F5
+}
+
+.title-text {
+margin-top: -45px;
+}
+
+.menu-btn:hover {
+  text-decoration: none;
+  color: #7f8c8d;
+}
+
+/* Header */
+.site-header {
+  position: fixed;
+  background: #1abc9c;
+  color: #1C1C1C;
+  width: 100%;
+  padding-top: 5px;
+  padding-bottom: 5px;
+  z-index: 9998;
+  font-size: 30px;
+}
+
+/* Footer */
+.site-footer {
+  position: relative;
+  border-top: 1px solid #EEE;
+  color: #999;
+  padding: 10px;
+  font-size: 0.8em;
+  text-align: center;
+}
+
+.greenBorder{
+  border-bottom: 1px solid #1ABC9C;
+}
+
+.no-decoration:hover {
+  text-decoration: none;
+}
+
+a.box-link:link, a.box-link:visited {
+  text-decoration: none;
+  color: #0000CC;
+}
+
+
+.box-content-red {
+  text-align: center;
+  padding: 5px;
+  height:400px;
+}
+
+.box-content-red i{
+  color: #e74c3c;
+}
+
+.box-content-red:hover {
+  text-decoration: none;
+  background: #e74c3c;
+}
+
+.box-content-red:hover i{
+  color: white;
+}
+
+/* ////////////////////////////////// */
+
+.box-content-green {
+  text-align: center;
+  padding: 5px;
+  height:400px;
+}
+
+.box-content-green i{
+  color: #1ABC9C;
+}
+
+.box-content-green:hover {
+  text-decoration: none;
+  background: #16a085;
+}
+
+.box-content-green:hover i{
+  color: white;
+}
+
+/* ////////////////////////////////// */
+
+.box-content-yellow {
+  text-align: center;
+  padding: 5px;
+  height:400px;
+}
+
+.box-content-yellow i{
+  color: #f1c40f;
+}
+
+.box-content-yellow:hover {
+  background: #f1c40f;
+}
+
+.box-content-yellow:hover i{
+  color: white;
+}
+
+
+/*# sourceMappingURL=demo.css.map */
