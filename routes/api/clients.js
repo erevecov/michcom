@@ -28,6 +28,30 @@ const clients = [{
         });
     }
 }, {
+    method: 'GET',
+    path: '/api/disabledClients',
+    handler: function(request, reply) {
+        db.find({
+            "selector": {
+                "_id": {
+                    "$gte": null
+                },
+                "type": "client",
+                "status": "disabled"
+            },
+            "fields": [
+            ]
+        }, function(err, result) {
+            if (err) {
+                throw err;
+            }
+            console.log(result)
+            if (result.docs[0]) {
+                return reply(result.docs);
+            }
+        });
+    }
+}, {
     method: 'POST',
     path: '/api/getClient',
     config: {
@@ -102,6 +126,59 @@ const clients = [{
 
                         return reply({ok: 'Cliente '+newClientObj.name+' agregado correctamente'}); 
                     });
+                }
+            }); 
+        },
+        validate: {
+            payload: Joi.object().keys({
+                name: Joi.string(),
+                rut: Joi.string(),
+                address: Joi.string().allow(''),
+                emails: Joi.string().allow('')
+            })
+        }
+    }
+}, { // modificar cliente en el sistema
+    method: 'POST',
+    path: '/api/modClient',
+    config: {
+        handler: (request, reply) => {
+            let name = request.payload.name;
+            let rut = request.payload.rut;
+            let address = request.payload.address;
+            let emails = JSON.parse(request.payload.emails);
+            let modClientObj = {};
+
+            db.find({ 
+                "selector": {
+                    "_id": rut,
+                    "type": "client"
+                },
+                "fields": [
+        
+                ],
+                "limit":1
+            }, function(err, result) {
+                if (err) {
+                    throw err;
+                }
+
+                if(result.docs[0]) {
+                    modClientObj = result.docs[0];
+                    modClientObj.name = name;
+                    modClientObj.address = address;
+                    modClientObj.emails = emails;
+
+                    db.insert(modClientObj, function(errUpdate, body) {
+                        if (errUpdate) {
+                            throw errUpdate;
+                        }
+
+                        return reply({ok: 'Cliente '+modClientObj.name+' modificado correctamente'}); 
+                    });
+                     
+                }else{
+                    return reply({error: 'el cliente de rut '+rut+' no existe'});
                 }
             }); 
         },
