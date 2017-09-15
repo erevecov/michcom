@@ -64,7 +64,7 @@
 					</div>
 
 					<div class="col-md-10 col-xs-12 box-shadows">
-						<table id="table2" class="display cell-border stripe" cellspacing="0" width="100%">
+						<table id="table2" class="display cell-border stripe nowrap" cellspacing="0" width="100%">
 						  <thead>
 						      <tr>
 					          <th>Empresa:</th>
@@ -82,7 +82,7 @@
 
 <!-- Modal -->
 <div class="modal fade" id="clientModal" tabindex="-1" role="dialog" aria-labelledby="modal_title">
-  <div class="modal-dialog modal-lg" role="document">
+  <div class="modal-dialog modal-xl" role="document">
     <div class="modal-content">
       <div class="modal-header">
         <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
@@ -127,7 +127,6 @@
 
 		function chargeTable(clientsData) {
 			datatable = $('#table')
-			.addClass( 'nowrap' )
 			.DataTable( {
 				"iDisplayLength": 100,
 				"oLanguage": {
