@@ -57,7 +57,7 @@
 
 					<div class="col-md-2 col-xs-12 box-shadows">
 						<br>	
-						<button class="btn btn-success btn-block" id="desButton" disabled>
+						<button class="btn btn-success btn-block" id="habButton" disabled>
 							<i class="fa fa-times" aria-hidden="true"></i> Habilitar
 						</button>
 						<br>		
@@ -105,27 +105,19 @@
 	var selectedClientRut = '';
 	var selectedClientData;  // los datos del cliente de la row seleccionada
 	var selectedClientRow; // la row seleccionada del cliente
+
+	var dSelectedClientRut = '';
+	var dSelectedClientData;  // los datos del cliente de la row seleccionada (deshabilitados)
+	var dSelectedClientRow; // la row seleccionada del cliente (deshabilitados)
+
 	var clientsData = []; // todos los clientes (Campos formateados)
+	var disabledClientsData = []; // todos los clientes deshabilitados (Campos formateados)
 
-	jQuery(document).ready(function($) {
-		$.ajax({
-			url: 'api/clients'
-		})
-		.done(function(data) {
-			$.each(data, function(index, val) {
-				clientsData.push({
-					name: val.name,
-					rut: $.formatRut(val._id)
-				})
-			});
+	jQuery(document).ready(function($) {	
+		chargeTable()
+		chargeTable2()
 
-			chargeTable(clientsData)
-		})
-		.fail(function() {
-			console.log("error al cargar clientes");
-		});
-
-		function chargeTable(clientsData) {
+		function chargeTable() {
 			datatable = $('#table')
 			.DataTable( {
 				"iDisplayLength": 100,
@@ -137,7 +129,25 @@
 				"columns" : [ 
 					{"data" : "name"}, 
 					{"data" : "rut"}
-				]
+				],
+				initComplete: function(settings, json) {
+	 				$.ajax({
+						url: 'api/clients'
+					})
+					.done(function(data) {
+						$.each(data, function(index, val) {
+							clientsData.push({
+								name: val.name,
+								rut: $.formatRut(val._id)
+							})
+						});
+
+						datatable.rows.add(clientsData).draw();
+					})
+					.fail(function() {
+						console.log("error al cargar clientes");
+					});
+  				}
 			});
 
 
@@ -157,6 +167,56 @@
 
 		            $('#modButton').prop('disabled', false);
 		            $('#desButton').prop('disabled', false);
+	        	}
+    		});
+		}
+
+		function chargeTable2() {
+			datatable2 = $('#table2')
+			.DataTable( {
+				"iDisplayLength": 100,
+				"oLanguage": {
+					"sSearch": ""
+				},
+				"columns" : [ 
+					{"data" : "name"}, 
+					{"data" : "rut"}
+				],
+				"responsive": true,
+				initComplete: function(settings, json) {
+	 				$.ajax({
+						url: 'api/disabledClients'
+					})
+					.done(function(data) {
+						$.each(data, function(index, val) {
+							disabledClientsData.push({
+								name: val.name,
+								rut: $.formatRut(val._id)
+							})
+						});
+
+						datatable2.rows.add(disabledClientsData).draw();
+					})
+					.fail(function() {
+						console.log("error al cargar clientes deshabilitados");
+					});
+  				}
+			});
+
+			$('#table2 tbody').on( 'click', 'tr', function () {
+        		if ( $(this).hasClass('selected') ) {
+	            	$(this).removeClass('selected');
+	            	$('#habButton').prop('disabled', true);
+		        } else {
+		            datatable2.$('tr.selected').removeClass('selected');
+		            $(this).addClass('selected');
+		            dSelectedClientRow = datatable2.row( $(this) );
+		            dSelectedClientData = datatable2.row( $(this) ).data();
+		            var replace1 = dSelectedClientData.rut.split('.').join('');
+  					var replace2 = replace1.replace('-', '');
+  					dSelectedClientRut = replace2;
+
+		            $('#habButton').prop('disabled', false);
 	        	}
     		});
 		}
@@ -336,6 +396,65 @@
 
 		});
 
+
+		$('#habButton').on('click', function() {
+			console.log(dSelectedClientRut)
+			console.log(dSelectedClientRow)
+			console.log(dSelectedClientData)
+
+			swal({
+			  title: '¿Estás seguro?',
+			  text: 'Podrás volver a deshabilitar este cliente desde la pestaña "clientes habilitados"',
+			  type: 'warning',
+			  showCancelButton: true,
+			  confirmButtonColor: '#3085d6',
+			  cancelButtonColor: '#d33',
+			  confirmButtonText: 'Si, habilitar!',
+			  cancelButtonText: 'No, cancelar!',
+			  confirmButtonClass: 'btn btn-primary',
+			  cancelButtonClass: 'btn btn-default',
+			  buttonsStyling: false,
+			  animation: false,
+  			  customClass: 'animated tada'
+			}).then(function () {
+				$.ajax({
+					url: '/api/enableClient',
+					type: 'POST',
+					data: {rut: dSelectedClientRut},
+				})
+				.done(function(data) {
+					if (data.ok) {
+						dSelectedClientRow.remove().draw();
+						
+						var newRowAdded = datatable.row.add( {
+							"name": dSelectedClientData.name,
+					        "rut": dSelectedClientData.rut
+						}).draw().node();
+
+						$( newRowAdded ).css( 'color', '#f1c40f' );
+
+						setTimeout(function() {
+							$( newRowAdded ).css( 'color', 'black' );
+						}, 6000);
+						
+
+						$('#habButton').prop('disabled', true);
+						swal(
+							'Habilitado!',
+						    data.ok,
+						    'success'
+						)
+					}
+
+				})
+				.fail(function() {
+					console.log("error al habilitar cliente");
+				});
+				
+			});
+		});
+
+
 		$('#desButton').on('click', function() {
 			swal({
 			  title: '¿Estás seguro?',
@@ -360,6 +479,19 @@
 				.done(function(data) {
 					if (data.ok) {
 						selectedClientRow.remove().draw();
+
+						var newRowAdded = datatable2.row.add( {
+							"name": selectedClientData.name,
+					        "rut": selectedClientData.rut
+						}).draw().node();
+
+
+						$( newRowAdded ).css( 'color', '#f1c40f' );
+
+						setTimeout(function() {
+							$( newRowAdded ).css( 'color', 'black' );
+						}, 6000);
+
 						$('#modButton').prop('disabled', true);
 		            	$('#desButton').prop('disabled', true);
 						swal(

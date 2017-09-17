@@ -304,6 +304,49 @@ const clients = [{
             })
         }
     }
+}, { // habilitar un cliente
+    method: 'POST',
+    path: '/api/enableClient',
+    config: {
+        handler: (request, reply) => {
+            let rut = request.payload.rut;
+            let clientData = {};
+
+            db.find({ 
+                "selector": {
+                    "_id": rut,
+                    "type": "client"
+                },
+                "fields": [
+        
+                ],
+                "limit":1
+            }, function(err, result) {
+                if (err) {
+                    throw err;
+                }
+
+                clientData = result.docs[0];
+
+                clientData.status = 'enabled';
+
+                db.insert(clientData, function(errUpdate, body) {
+                    if (errUpdate) {
+                        throw errUpdate;
+                    }
+
+                    return reply({ok: 'Cliente '+clientData.name+' habilitado correctamente'}); 
+                });
+                
+                
+            }); 
+        },
+        validate: {
+            payload: Joi.object().keys({
+                rut: Joi.string()
+            })
+        }
+    }
 }];
 
 export default clients;
