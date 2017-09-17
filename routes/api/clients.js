@@ -21,7 +21,7 @@ const clients = [{
             if (err) {
                 throw err;
             }
-            console.log(result)
+            
             if (result.docs[0]) {
                 return reply(result.docs);
             }
@@ -45,7 +45,7 @@ const clients = [{
             if (err) {
                 throw err;
             }
-            console.log(result)
+            
             if (result.docs[0]) {
                 return reply(result.docs);
             }

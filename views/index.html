@@ -7,8 +7,8 @@
 {{/extend}}
 
 <div class="row">
-	<div class="col-md-10 col-md-offset-1 box-shadows" style="background-color: #FFFFFF; padding-top: 10px; ">
-		<table id="table" class="display cell-border nowrap" cellspacing="0" width="100%">
+	<div class="col-md-10 col-md-offset-1 box-shadows table-responsive" style="background-color: #FFFFFF; padding-top: 10px; ">
+		<table id="table" class="display cell-border nowrap table table-condensed" cellspacing="0" width="100%">
 		  <thead>
 		      <tr>
 	          <th>Empresa:</th>
@@ -80,7 +80,7 @@
 				    	<div id="invoiceStep"></div>
 
 				    	<div id="infoContent">  					
-					    	<div id="invoices"></div>	
+					    	<div id="invoices" class="table-responsive"></div>	
 					    	<div id="clientData"></div>
 				    	</div>
 
@@ -364,7 +364,7 @@ function chargeInvoiceTable(client) {
 
 	$('#invoices').empty();
 	$('#invoices').html(`
-	<table id="invoiceTable" class="display nowrap" cellspacing="0" width="100%">
+	<table id="invoiceTable" class="display nowrap table table-condensed" cellspacing="0" width="100%">
 	  <thead>
 	      <tr>
           <th>N° Factura:</th>

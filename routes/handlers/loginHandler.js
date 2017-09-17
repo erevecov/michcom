@@ -1,6 +1,7 @@
 import Boom from 'boom';
 import Joi from 'joi';
 import cloudant from '../../config/cloudant.js';
+import md5 from 'md5';
 
 let uuid = 1;
 const login = function(request, reply) {
@@ -17,10 +18,10 @@ const login = function(request, reply) {
             Boom.expectationFailed('Falta Usuario o Contraseña');
         } else {
             let post_email = request.payload.username;
-            let post_password = request.payload.password;
+            let post_password = md5(request.payload.password);
 
             let db = cloudant.db.use("michcom");
-                          
+                                  
             db.find({  
               "selector": {
                 "_id": post_email,
