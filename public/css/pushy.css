@@ -153,9 +153,12 @@
 li:hover  i{ /* SI DEJASTE LA CAGADA, MIRAR AQUÍ */
   color:white;
 }
+
+/* Asignado con credenciales
 .pushy-link:hover {
   background:rgba(52, 152, 219,1.0);
 }
+*/
 
 .pushy-submenu > a,
 .pushy-submenu > button {

@@ -1,0 +1,281 @@
+{{!< layout/default}}
+
+{{#extend "css"}}
+
+<style>
+	#newClientName {	
+    	text-transform: uppercase;
+	}
+
+</style>
+
+{{/extend}}
+
+<div class="container-fluid">
+	<div class="row box-shadows" >
+		<div class="col-md-3 col-xs-12">
+			<fieldset>			
+				<label for="checkbox-1">Usuario</label>
+				<input class="searchOptions" type="checkbox" name="searchFilter" id="checkbox-1">
+				<label for="checkbox-2">Fechas</label>
+				<input class="searchOptions" type="checkbox" name="searchFilter" id="checkbox-2">					
+			</fieldset>
+		</div>
+
+		<div class="col-md-3 col-xs-12" id="userFilterContainer"></div>
+		<div class="col-md-3 col-xs-12" id="dateFilterContainer"></div>
+		<div class="col-md-1 col-xs-12" id="filterButtonContainer"></div>
+		<div class="col-md-2 col-xs-12">
+			<button id="reloadLogs" class="btn btn-success btn-block"><i class="fa fa-refresh" aria-hidden="true"></i> Recargar Logs</button>
+		</div>
+		
+		<div style="margin-top: 10px;" class="col-md-12 box-shadows table-responsive">
+			<table id="table" class="display nowrap table table-condensed" cellspacing="0" width="100%">
+			  <thead>
+			      <tr>
+		          <th>Fecha:</th>
+		          <th>Usuario:</th>
+		          <th>Email de usuario:</th>
+		          <th>Rol</th>
+		          <th>Formulario</th>
+		          <th>Descripción</th>
+			      </tr>
+			  </thead>		 
+			</table>
+		</div>	
+	</div>  	
+</div>
+
+
+<!-- Modal -->
+<div class="modal fade" id="logModal" tabindex="-1" role="dialog" aria-labelledby="modal_title">
+  <div class="modal-dialog modal-xl" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+        <h4 class="modal-title" id="modal_title"></h4>
+      </div>
+      <div class="modal-body" id="modal_body">
+   
+      </div>
+      <div class="modal-footer" id="modal_footer">
+        
+      </div>
+    </div>
+  </div>
+</div>
+
+{{#extend "js"}}
+<script>
+	var datatable;
+	var logsData = [];
+	var users = [];
+	var filterUser = 0;
+	var filterDate = 0;
+	var userSelected = '';
+	var startDate = '';
+	var endDate = '';
+
+	jQuery(document).ready(function($) {
+		var start = moment().subtract(29, 'days');
+    	var end = moment();
+
+    	$( '.searchOptions' ).checkboxradio();
+		
+    	reloadAllLogs();
+
+    	$('#reloadLogs').on('click', function() {
+    		reloadAllLogs()
+    	});
+
+		function reloadAllLogs() {
+			$.ajax({
+				url: 'api/logs'
+			})
+			.done(function(data) {
+				logsData = [];
+				datatable.clear().draw();
+				$.each(data, function(index, val) {
+					
+					logsData.push({
+						date: moment(val._id).format('DD/MM/YYYY HH:ss'),
+						userName: val.userName,
+						email: val.userEmail,
+						role: val.role,
+						form: val.form,
+						description: val.description
+					})
+					
+				});
+
+				datatable.rows.add(logsData).draw();
+			
+			})
+			.fail(function() {
+				console.log("error al cargar logs");
+			});
+		}
+
+		$.ajax({
+			url: 'api/users'
+		})
+		.done(function(data) {
+			$.each(data, function(index, val) {
+				users.push({
+					id: index+1,
+					text: val._id
+				})
+			});	
+		})
+		.fail(function() {
+			console.log("error al obtener usuarios");
+		});
+		
+		$( ".searchOptions" ).on( "change", function(e) {
+			var target = $( e.target );
+			var checked = target.is( ":checked" )
+			var id = target[0].id
+
+			if (id === 'checkbox-1') {
+				if (checked === true) {
+					filterUser = 1;
+					$('#userFilterContainer').html('<select id="users" style="width: 100%;"><option value=""></option></select>');
+					
+					$('#users').select2({
+						placeholder: "Seleccione un usuario",
+		      			allowClear: true,
+						data: users
+					});
+
+					$('#users').on('change', function(e) {
+						userSelected = $('#users').select2('data')[0].text;
+					});
+				}else{
+					filterUser = 0;
+					$('#userFilterContainer').empty();
+					userSelected = '';
+				}
+			} else if (id === 'checkbox-2') {
+				if (checked === true) {
+					filterDate = 1;
+					$('#dateFilterContainer').html(`
+						<div id="reportrange" class="pull-right" style="background: #fff; cursor: pointer; padding: 5px 10px; border: 1px solid #ccc; width: 100%">
+						    <i class="glyphicon glyphicon-calendar fa fa-calendar"></i>&nbsp;
+						    <span></span> <b class="caret"></b>
+						</div>`
+					);
+
+					$('#reportrange').daterangepicker({
+				        startDate: start,
+				        endDate: end,
+				        ranges: {
+				           'Hoy': [moment(), moment()],
+				           'Ayer': [moment().subtract(1, 'days'), moment().subtract(1, 'days')],
+				           'Ultimos 7 días': [moment().subtract(6, 'days'), moment()],
+				           'Ultimos 30 días': [moment().subtract(29, 'days'), moment()],
+				           'Este mes': [moment().startOf('month'), moment().endOf('month')],
+				           'El mes anterior': [moment().subtract(1, 'month').startOf('month'), moment().subtract(1, 'month').endOf('month')]
+				        }
+				    }, cb);
+
+			    	cb(start, end);
+
+				}else{
+					filterDate = 0;
+					$('#dateFilterContainer').empty();
+					startDate = '';
+					endDate = '';
+				}
+			}
+
+			if( filterDate === 1 || filterUser === 1) {
+				$('#filterButtonContainer').html('<button class="btn btn-default" id="filterButton">Filtrar</button>');
+			}else {
+				$('#filterButtonContainer').empty();
+			}
+
+			
+		});
+		
+		chargeTable()
+
+		$('#filterButtonContainer').on('click', '#filterButton', function() {
+			var p1 = '';
+			var p2 = '';
+			var p3 = '';
+
+			if (filterUser == 1) {
+				p1 = userSelected.toString(); 
+			}
+			 
+			if (filterDate == 1) {
+				p2 = startDate.toString();
+				p3 = endDate.toString();
+			}
+
+			$.ajax({
+				url: 'api/getLogs',
+				type: 'POST',
+				data: {user:p1, startDate: p2, endDate: p3}
+			})
+			.done(function(data) {
+				datatable.clear().draw();
+
+				logsData = [];
+				$.each(data, function(index, val) {
+							
+					logsData.push({
+						date: moment(val._id).format('DD/MM/YYYY HH:ss'),
+						userName: val.userName,
+						email: val.userEmail,
+						role: val.role,
+						form: val.form,
+						description: val.description
+					})
+					
+				});
+
+				datatable.rows.add(logsData).draw();
+			})
+			.fail(function() {
+				console.log("error");
+			});
+			
+		})
+
+		function cb(start, end) {
+			startDate = start.format('YYYY-MM-DDT00:00:00');
+			endDate = end.format('YYYY-MM-DDT23:59:59');
+        	$('#reportrange span').html(start.format('MMMM D, YYYY') + ' - ' + end.format('MMMM D, YYYY'));
+    	}
+
+		function chargeTable() {
+			datatable = $('#table')
+			.DataTable( {
+				"order": [[ 0, "desc" ]],
+				"iDisplayLength": 100,
+				"oLanguage": {
+					"sSearch": ""
+				},
+				"responsive": true,
+				"columns" : [ 
+					{"data" : "date"}, 
+					{"data" : "userName"},
+					{"data" : "email"},
+					{"data" : "role"}, 
+					{"data" : "form"}, 
+					{"data" : "description"} 
+				],
+				initComplete: function(settings, json) {
+	 				reloadAllLogs()
+  				}
+			
+
+			});
+		}
+
+	})
+
+	
+</script>
+{{/extend}}

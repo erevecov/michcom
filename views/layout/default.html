@@ -30,7 +30,8 @@
   <link rel="stylesheet" href="public/css/bootstrapValidator.min.css">
   <link rel="stylesheet" href="public/css/buttons.dataTables.min.css">
   <link rel="stylesheet" href="public/css/animate.css">
-  <link rel="stylesheet" type="text/css" href="//cdn.jsdelivr.net/bootstrap.daterangepicker/2/daterangepicker.css" />
+  <link rel="stylesheet" href="public/css/daterangepicker.css" />
+  <link rel="stylesheet" href="public/css/select2.min.css">
   <style>
   p {
     font-weight: normal;
@@ -59,16 +60,22 @@
     supported by Chrome and Opera */
   }
 
-  #table tbody tr {
-    cursor: pointer;
+  .pushy-link:hover {
+    background:{{ credentials.color }};
   }
 
   #table tbody tr:hover {
-    background: #3CB2F5!important;
+    background: {{ credentials.color }} !important;
+    cursor: pointer;
+  }
+
+  #table2 tbody tr:hover {
+    background: {{ credentials.color }} !important;
+    cursor: pointer;
   }
 
   #invoiceTable tbody tr:hover {
-    background: #3CB2F5!important;
+    background: {{ credentials.color }} !important;
     cursor: pointer;
   }
 
@@ -110,7 +117,7 @@
   <nav class="pushy pushy-left" data-focus="#first-link">
 
     <div class="pushy-content">
-      <div class="top-menu">
+      <div class="top-menu" style="background-color: {{ credentials.color }};">
         <span>
           <i style="margin-top:15px; margin-left:20px;" class="fa fa-5x fa-user-circle-o" aria-hidden="true"></i>
         </span>
@@ -126,6 +133,7 @@
         <ul>
             <li class="pushy-link"><a href="/"><i class="fa fa-2x fa-home" aria-hidden="true"></i>&nbsp;&nbsp;&nbsp;&nbsp; HOME</a></li>
             <li class="pushy-link"><a href="/clients"><i class="fa fa-2x fa-building" aria-hidden="true"></i>&nbsp;&nbsp;&nbsp;&nbsp; CLIENTES</a></li>
+            <li class="pushy-link"><a href="/logs"><i class="fa fa-2x fa-book" aria-hidden="true"></i>&nbsp;&nbsp;&nbsp;&nbsp; LOGS</a></li>
             <!--<li class="pushy-link"><a href="/users"><i class="fa fa-2x fa-user" aria-hidden="true"></i>&nbsp;&nbsp;&nbsp;&nbsp; USUARIOS</a></li>-->
         </ul>
     </div>
@@ -177,8 +185,8 @@
   <script src="public/js/vfs_fonts.js"></script>
   <script src="public/js/buttons.html5.min.js"></script>
   <script src="public/images/base64_logo.js"></script>
-
-  <script type="text/javascript" src="//cdn.jsdelivr.net/bootstrap.daterangepicker/2/daterangepicker.js"></script>
+  <script src="public/js/daterangepicker.js"></script>
+  <script src="public/js/select2.min.js"></script>
 
   
   <script>
@@ -188,6 +196,14 @@
     }else {
       return moment.tz('America/Santiago').format('YYYY-MM-DDTHH:mm:ss.SSSSS');
     }
+  }
+
+  function createLog(form, desc) {
+    $.ajax({
+      url: 'api/log',
+      type: 'POST',
+      data: {description: desc, form: form}
+    });
   }
   </script>
 

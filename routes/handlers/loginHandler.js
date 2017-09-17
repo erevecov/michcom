@@ -21,7 +21,7 @@ const login = function(request, reply) {
             let post_password = md5(request.payload.password);
 
             let db = cloudant.db.use("michcom");
-                                  
+
             db.find({  
               "selector": {
                 "_id": post_email,
@@ -31,19 +31,20 @@ const login = function(request, reply) {
                 "_id",
                 "name",
                 "lastname",
-                "role"
+                "role",
+                "color"
               ]
             }, function(err, result) {
               if (err) {
                 throw err;
               }
 
-
               if(result.docs[0]) {
                 account.name = result.docs[0].name;
                 account.lastname = result.docs[0].lastname;
-                account.email = result.docs[0].email;
+                account.email = result.docs[0]._id;
                 account.role = result.docs[0].role;
+                account.color = result.docs[0].color;
 
                 const sid = String(++uuid);
                 request.server.app.cache.set(sid, { account: account }, 0, (err) => {

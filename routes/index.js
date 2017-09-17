@@ -6,11 +6,14 @@ import cloudant from '../config/cloudant.js';
 import loginHandler      from './handlers/loginHandler';
 import logoutHandler     from './handlers/logoutHandler';
 import Clients           from './clients';
+import Logs              from './logs';
 
 /////////////////////////////////////////////////////////// API
 
 import APIclients        from './api/clients';
 import APIinvoices       from './api/invoices';
+import APIlogs           from './api/logs';
+import APIUsers          from './api/users';
 
 const Login = {
     method: ["GET", "POST"],
@@ -38,7 +41,7 @@ const Index = {
         //auth: false,
         handler: function(request, reply) {
             let session = request.auth.credentials;
-            let credentials = {email: session.email, name: session.name, lastname: session.lastname, role: session.role};
+            let credentials = {email: session.email, name: session.name, lastname: session.lastname, role: session.role, color: session.color};
 
             if (credentials.role == 'admin') {
                 return reply.view('index', {credentials: credentials, admin:'ok'});    
@@ -69,8 +72,11 @@ const Routes = [].concat(
     Logout,
     Index,
     Clients,
+    Logs,
     APIclients,
-    APIinvoices
+    APIinvoices,
+    APIlogs,
+    APIUsers
 );
 
 export default Routes;

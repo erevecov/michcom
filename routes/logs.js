@@ -1,8 +1,8 @@
 import Joi from 'joi';
 
-const Clients = {
+const Logs = {
     method: ['GET'],
-    path: '/clients',
+    path: '/logs',
     config: { 
         //auth: false,
         handler: function(request, reply) {
@@ -10,7 +10,7 @@ const Clients = {
             let credentials = {email: session.email, name: session.name, lastname: session.lastname, role: session.role, color: session.color};
 
             if (credentials.role == 'admin') {
-                return reply.view('clients', {credentials: credentials, admin:'ok'});    
+                return reply.view('logs', {credentials: credentials, admin:'ok'});    
             }else {
                 return reply.view('/', {credentials: credentials});
             }
@@ -18,4 +18,4 @@ const Clients = {
     }
 };
 
-export default Clients;
+export default Logs;
