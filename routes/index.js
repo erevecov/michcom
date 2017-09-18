@@ -7,6 +7,7 @@ import loginHandler      from './handlers/loginHandler';
 import logoutHandler     from './handlers/logoutHandler';
 import Clients           from './clients';
 import Logs              from './logs';
+import Users             from './users';
 
 /////////////////////////////////////////////////////////// API
 
@@ -72,6 +73,7 @@ const Routes = [].concat(
     Logout,
     Index,
     Clients,
+    Users,
     Logs,
     APIclients,
     APIinvoices,

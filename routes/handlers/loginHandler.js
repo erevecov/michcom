@@ -25,7 +25,8 @@ const login = function(request, reply) {
             db.find({  
               "selector": {
                 "_id": post_email,
-                "password": post_password
+                "password": post_password,
+                "status": "enabled"
               },
               "fields": [
                 "_id",

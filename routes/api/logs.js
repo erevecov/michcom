@@ -80,8 +80,6 @@ const logs = [{ // ver todos
             let startDate = request.payload.startDate;
             let endDate = request.payload.endDate;
 
-            console.log(user, startDate, endDate)
-
             let query = {
                 selector: {
                     _id: {

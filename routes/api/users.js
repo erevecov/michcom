@@ -1,6 +1,7 @@
 import Joi from 'joi';
 import cloudant from '../../config/cloudant.js';
 import moment from 'moment-timezone';
+import md5 from 'md5';
 
 let db = cloudant.db.use("michcom");
 
@@ -13,7 +14,8 @@ const users = [{ // ver todos
                 '_id': {
                     '$gte': null
                 },
-                'type': 'user'
+                'type': 'user',
+                'status': 'enabled'
             },
             'fields': [
                 
@@ -22,12 +24,35 @@ const users = [{ // ver todos
             if (err) {
                 throw err;
             }
-
-            console.log(result)
             
-            if (result.docs[0]) {
-                return reply(result.docs);
+            
+            return reply(result.docs);
+            
+        });
+    }
+}, {
+    method: 'GET',
+    path: '/api/disabledUsers',
+    handler: function(request, reply) {
+        db.find({
+            "selector": {
+                "_id": {
+                    "$gte": null
+                },
+                "type": "user",
+                "status": "disabled"
+            },
+            "fields": [
+            ]
+        }, function(err, result) {
+            if (err) {
+                throw err;
             }
+
+            
+            
+            return reply(result.docs);
+            
         });
     }
 }, { // agregar un usuario
@@ -35,31 +60,151 @@ const users = [{ // ver todos
     path: '/api/user',
     config: {
         handler: (request, reply) => {
-            let session = request.auth.credentials;
-            let credentials = {email: session.email, name: session.name, lastname: session.lastname, role: session.role};
-            let description = request.payload.description;
-            let form = request.payload.form;
-          
-            let logData = {
-                '_id': moment.tz('America/Santiago').format('YYYY-MM-DDTHH:mm:ss.SSSSS'),
-                'userEmail': credentials.email,
-                'userName': credentials.name+' '+credentials.lastname,
-                'role': credentials.role,
-                'form': form,
-                'description': description
-            };
-         
-            db.insert(logData, function(errUpdate, body) {
-                if (errUpdate) {
-                    throw errUpdate;
+            let email = request.payload.email;
+            let name = request.payload.name;
+            let lastname = request.payload.lastname;
+            let password = md5(request.payload.password);
+            let role = request.payload.role;
+            let color = request.payload.color;
+            let userData = {};
+
+            db.find({
+                'selector': {
+                    '_id': email,
+                    'type': 'user'
+                },
+                'fields': [
+                    
+                ],
+                'limit':1
+            }, function(err, result) {
+                if (err) {
+                    throw err;
+                }
+                
+                if (result.docs[0]) {
+                    return reply({error: 'El usuario del correo '+result.docs[0]._id+' ya existe.'});
+                }else {
+
+                    userData = {
+                        _id: email,
+                        type: 'user',
+                        status: 'enabled',
+                        password: password,
+                        name: name,
+                        lastname: lastname,
+                        role: role,
+                        color: color
+                    }
+
+                    db.insert(userData, function(errUpdate, body) {
+                        if (errUpdate) {
+                            throw errUpdate;
+                        }
+
+                        if(body.ok) {
+                            return reply({ok: 'El usuario del correo '+email+' creado correctamente!'});
+                        }
+                        
+
+                    });
                 }
             });
-
         },
         validate: {
             payload: Joi.object().keys({
-                description: Joi.string(),
-                form: Joi.string(),
+                email: Joi.string(),
+                password: Joi.string(),
+                name: Joi.string(),
+                lastname: Joi.string(),
+                role: Joi.string(),
+                color: Joi.string(),
+            })
+        }
+    }
+}, { // deshabilitar un usuario
+    method: 'POST',
+    path: '/api/disableUser',
+    config: {
+        handler: (request, reply) => {
+            let email = request.payload.email;
+            let userData = {};
+
+            db.find({ 
+                "selector": {
+                    "_id": email,
+                    "type": "user"
+                },
+                "fields": [
+        
+                ],
+                "limit":1
+            }, function(err, result) {
+                if (err) {
+                    throw err;
+                }
+
+                userData = result.docs[0];
+
+                userData.status = 'disabled';
+
+                db.insert(userData, function(errUpdate, body) {
+                    if (errUpdate) {
+                        throw errUpdate;
+                    }
+
+                    return reply({ok: 'Usuario '+userData._id+' deshabilitado correctamente'}); 
+                });
+                
+                
+            }); 
+        },
+        validate: {
+            payload: Joi.object().keys({
+                email: Joi.string()
+            })
+        }
+    }
+}, { // habilitar un usuario
+    method: 'POST',
+    path: '/api/enableUser',
+    config: {
+        handler: (request, reply) => {
+            let email = request.payload.email;
+            let userData = {};
+
+            db.find({ 
+                "selector": {
+                    "_id": email,
+                    "type": "user"
+                },
+                "fields": [
+        
+                ],
+                "limit":1
+            }, function(err, result) {
+                if (err) {
+                    throw err;
+                }
+
+                userData = result.docs[0];
+
+                userData.status = 'enabled';
+
+                db.insert(userData, function(errUpdate, body) {
+                    if (errUpdate) {
+                        throw errUpdate;
+                    }
+
+                    return reply({ok: 'Usuario '+userData._id+' habilitado correctamente'}); 
+                });
+                
+                
+            }); 
+        },
+        validate: {
+            payload: Joi.object().keys({
+                email: Joi.string()
             })
         }
     }
