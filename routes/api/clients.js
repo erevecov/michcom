@@ -3,7 +3,7 @@ import cloudant from '../../config/cloudant.js';
 
 let db = cloudant.db.use("michcom");
 
-const clients = [{
+const clients = [{ // todos los clientes habilitados
     method: 'GET',
     path: '/api/clients',
     handler: function(request, reply) {
@@ -27,7 +27,7 @@ const clients = [{
             }
         });
     }
-}, {
+}, { // todos los clientes deshabilitados
     method: 'GET',
     path: '/api/disabledClients',
     handler: function(request, reply) {
@@ -51,7 +51,7 @@ const clients = [{
             }
         });
     }
-}, {
+}, { // traer un cliente
     method: 'POST',
     path: '/api/getClient',
     config: {
@@ -191,7 +191,7 @@ const clients = [{
             })
         }
     }
-}, { // obtener todas las facturas de un cliente
+}, { // obtener un cliente junto a todas sus facturas
     method: 'POST',
     path: '/api/client',
     config: {
@@ -222,7 +222,10 @@ const clients = [{
                 db.find({ 
                     "selector": {
                         "_id": {
-                          "$gt": 0
+                            "$gt": 0
+                        },
+                        "$not": {
+                          "status": "disabled"
                         },
                         "type": "invoice",
                         "client": rut
@@ -248,6 +251,7 @@ const clients = [{
                         throw err;
                     }
 
+                    console.log(result2)
                     clientData.invoices = result2.docs;
                     return reply(clientData);
                 }); 

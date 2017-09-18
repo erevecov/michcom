@@ -179,6 +179,14 @@ var invoiceNumberToChange;
 
 
 jQuery(document).ready(function($) {
+	function createLog2(form, desc) { // solo para esta página
+	    $.ajax({
+	      url: 'api/log',
+	      type: 'POST',
+	      data: {description: desc, form: form}
+	    });
+  	}
+
 	$('#new').on('change', '#newInvoiceType', function(){
 		if($('#newInvoiceType').val() === 'product') {
 			$( "#newInvoiceBusiness" ).val('Michcom Ltda');
@@ -446,6 +454,7 @@ function chargeInvoiceTable(client) {
 		  	$('#infoContent').css('visibility', 'hidden');
 		  	$('#invoiceStep').html(`
 		  		<a id="goBack" class="btn btn-default"><i class="fa fa-arrow-left" aria-hidden="true"></i></a>
+		  		<a id="delInvoice" class="btn btn-danger pull-right"><i class="fa fa-times" aria-hidden="true"></i> Eliminar Factura</a>
 		  		<center>
 		  		<h1>N° de factura: <b>${statusDataRow.invoice}</b></h1>
 		  		<h1>Monto total: <b>${statusDataRow.amount}</b></h1>
@@ -455,7 +464,7 @@ function chargeInvoiceTable(client) {
 		  		<h1>Fecha de pago de factura</h1>
 		  			<input style="font-size:30px; width:200px;" type="text" name="invoiceDate" value="${moment.tz('America/Santiago').format('MM-DD-YYYY')}" /> 
 		  			<br><br><br>
-		  			<button class="btn btn-success btn-block"><h2> <i class="fa fa-retweet" aria-hidden="true"></i>  Cambiar estado a PAGADO</h2></button>
+		  			<button id="sendStatus" class="btn btn-success btn-block"><h2> <i class="fa fa-retweet" aria-hidden="true"></i>  Cambiar estado a PAGADO</h2></button>
 		  		</center>
 		  	`);
 
@@ -469,6 +478,7 @@ function chargeInvoiceTable(client) {
 	    	$('#infoContent').css('visibility', 'hidden');
 	    	$('#invoiceStep').html(`
 	    		<a id="goBack" class="btn btn-default"><i class="fa fa-arrow-left" aria-hidden="true"></i></a>
+	    		<a id="delInvoice" class="btn btn-danger pull-right"><i class="fa fa-times" aria-hidden="true"></i> Eliminar Factura</a>
 		  		<center>
 		  		<h1>N° de factura: <b>${statusDataRow.invoice}</b></h1>
 				<h1>Monto total: <b>${statusDataRow.amount}</b></h1>
@@ -478,7 +488,7 @@ function chargeInvoiceTable(client) {
 		  		<h1>Razón de anulación</h1> 
 		  		<textarea class="form-control" rows="5" id="cancellation_reason"></textarea>
 		  			<br>
-		  			<button class="btn btn-danger btn-block"><h2> <i class="fa fa-retweet" aria-hidden="true"></i>  Cambiar estado a PENDIENTE</h2></button>
+		  			<button id="sendStatus" class="btn btn-danger btn-block"><h2> <i class="fa fa-retweet" aria-hidden="true"></i>  Cambiar estado a PENDIENTE</h2></button>
 		  		</center>
 		  	`);
 
@@ -493,7 +503,72 @@ function chargeInvoiceTable(client) {
 	  	$('#invoiceStep').empty();
 	  }); 
 
-	  $('#invoiceStep').on( 'click', 'button', function () { 
+	  $('#invoiceStep').on( 'click', '#delInvoice', function () {
+	  	swal({
+			  title: '¿Estás seguro de eliminar la factura '+statusDataRow.invoice+'?',
+			  text: '',
+			  type: 'warning',
+			  showCancelButton: true,
+			  confirmButtonColor: '#3085d6',
+			  cancelButtonColor: '#d33',
+			  confirmButtonText: 'Si, Eliminar!',
+			  cancelButtonText: 'No, cancelar!',
+			  confirmButtonClass: 'btn btn-danger',
+			  cancelButtonClass: 'btn btn-primary',
+			  buttonsStyling: false,
+			  animation: false,
+  			  customClass: 'animated tada'
+			}).then(function () {
+				$.ajax({
+					url: '/api/deleteInvoice',
+					type: 'POST',
+					data: {invoice: statusDataRow.invoice},
+				})
+				.done(function(data) {
+
+					createLog2('Facturas', 'Se eliminó la factura '+statusDataRow.invoice+' del cliente '+selectedClient.rut+' ('+selectedClient.name+')');
+
+					var filter1 = statusDataRow.amount.replace('$','');
+      				var filter2 = filter1.split('.').join('');
+					
+					if(data.beforeStatus === 'PENDIENTE') {
+						totalClientOwed = totalClientOwed - parseInt(filter2);
+						totalOwed = totalOwed - parseInt(filter2);
+						totalClientOwedCount--;
+
+					} else if(data.beforeStatus === 'PAGADO') {
+						totalClientPaid = totalClientPaid - parseInt(filter2);
+						totalClientPaidCount--;
+					}
+					
+					
+					chargeClientCharts(totalClientPaidCount, totalClientOwedCount);
+					$('#clientPaid').text('$ '+ number_format(totalClientPaid));
+					$('#clientOwed').text('$ '+ number_format(totalClientOwed));
+					$('#totalOwed').text('$ '+ number_format(totalOwed));
+					reloadClientRow();
+					
+
+					swal({
+					  title: 'Factura eliminada correctamente',
+					  type: 'success',
+					  text: data.ok,
+					  timer: 3000
+					})
+
+					$('#infoContent').css('visibility', 'visible');
+	  				$('#invoiceStep').empty();
+	  				statusSelectedRow.remove().draw();
+				})
+				.fail(function() {
+					console.log("error al eliminar factura");
+				});
+				
+				
+			});
+	  }); 
+
+	  $('#invoiceStep').on( 'click', '#sendStatus', function () { 
 	  	var invoicePaidDate;
 	  	var postData;
 	  	var reason;
@@ -770,7 +845,6 @@ function chargeModal(id) {
   })
   .done(function(data) {
   	var client = data;
-  	console.log(data)
   	selectedClient = client;
 
   	//console.log(selectedClient);
@@ -1064,7 +1138,7 @@ $('#new').on('click', '#sendNewInvoice', function() {
 			data: {rut: selectedClient.rut, invoice: newInvoiceNumber, business: newInvoiceBusiness, amount: newInvoiceAmount, invoice_type: newInvoiceType, description: newInvoiceDescription, date: '-', iva: iva}
 		})
 		.done(function(data) {
-	
+			createLog2('Facturas', 'Se agregó la factura '+newInvoiceNumber+' al cliente '+selectedClient.rut+' ('+selectedClient.name+')');
 			totalOwed += newInvoiceAmount;
 			$('#totalOwed').text('$ '+ number_format(totalOwed) );
 			//chargeClientCharts(totalClientPaidCount, totalClientOwedCount);

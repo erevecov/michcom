@@ -4,7 +4,7 @@ import moment from 'moment-timezone';
 
 let db = cloudant.db.use("michcom");
 
-const invoices = [{
+const invoices = [{ // Crear una factura
     method: 'POST',
     path: '/api/invoice',
     config: {
@@ -22,10 +22,13 @@ const invoices = [{
             let filter2 = filter1.replace('-', ''); // limpiar rut
 
 
-            db.find({ 
+            db.find({   /* FALTA AGREGAR QUE NO BUSQUE LAS FACTURAS QUE ESTÁN DISABLED */
                 "selector": {
                     "_id": {
                         "$gt": 0
+                    },
+                    "$not": {
+                      "status": "disabled"
                     },
                     "type": "invoice",
                     "invoice": invoice
@@ -125,7 +128,7 @@ const invoices = [{
             })
         }
     }
-},{
+}, {
     method: 'POST',
     path: '/api/changeInvoiceState',
     config: {
@@ -265,6 +268,88 @@ const invoices = [{
                 invoice: Joi.number(),
                 date: Joi.string(),
                 reason: Joi.string()
+            })
+        }
+    }
+}, { // Cambiar es status de una factura a disabled
+    method: 'POST',
+    path: '/api/deleteInvoice',
+    config: {
+        handler: (request, reply) => {
+            let invoice = request.payload.invoice;
+            let beforeStatus = '';
+
+            db.find({ 
+                "selector": {
+                    "_id": {
+                        "$gt": 0
+                    },
+                    "type": "invoice",
+                    "invoice": invoice
+                },
+                "limit":1,
+                "sort": [
+                    {
+                        "_id": "desc" // debe encontrar la factura con la fecha mas alta
+                    }
+                ]
+            }, function(err, result) {
+                if (err) {
+                    throw err;
+                }
+
+                let getInvoice = result.docs[0];
+                beforeStatus = getInvoice.status;
+
+                getInvoice.status = 'disabled';
+
+                db.insert(getInvoice, function(err2, body) {
+                    if (err2) {
+                        throw err2;
+                    }
+
+                    if(beforeStatus === 'PENDIENTE') {
+                        db.find({ 
+                        "selector": {
+                            "_id": getInvoice.client,
+                            "type": "client"
+                        },
+                        "limit":1
+                        }, function(err3, result2) {
+                            if (err3) {
+                                throw err3;
+                            }
+
+                            let client = result2.docs[0];
+
+                            let indexOf = client.invoiceOwed.indexOf(invoice);
+
+                            if (indexOf > -1) {
+                                client.invoiceOwed.splice(indexOf, 1);
+                                client.amountOwed = client.amountOwed - getInvoice.amount; 
+
+                                console.log(client);
+                                
+                                db.insert(client, function(err4, body2) {
+                                    if (err4) {
+                                        throw err4;
+                                    }
+
+                                    return reply({ok: 'factura de numero '+invoice+' eliminada correctamente', beforeStatus: beforeStatus});
+                                });
+                                
+                            } 
+                        }); 
+
+                    }   else if (beforeStatus === 'PAGADO'){
+                            return reply({ok: 'factura de numero '+invoice+' eliminada correctamente', beforeStatus: beforeStatus});
+                        }
+                });
+            });
+        },
+        validate: {
+            payload: Joi.object().keys({
+                invoice: Joi.number()
             })
         }
     }
