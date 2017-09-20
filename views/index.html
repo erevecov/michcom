@@ -180,10 +180,12 @@ var invoiceNumberToChange;
 
 jQuery(document).ready(function($) {
 	function createLog2(form, desc) { // solo para esta página
+		var date = getTime();
+
 	    $.ajax({
 	      url: 'api/log',
 	      type: 'POST',
-	      data: {description: desc, form: form}
+	      data: {date: date, description: desc, form: form}
 	    });
   	}
 
@@ -604,10 +606,11 @@ function chargeInvoiceTable(client) {
       .done(function(data) {
       	statusSelectedRow.remove().draw();
       	if(data.status === 'PENDIENTE') {
-      	
-      		
+
+			createLog2('Facturas', 'Se cambió el estado de la factura '+statusDataRow.invoice+' del cliente '+selectedClient.rut+' ('+selectedClient.name+') de PAGADO a PENDIENTE');
+
       		invoiceTable.row.add( {
-						"invoice": statusDataRow.invoice,
+				"invoice": statusDataRow.invoice,
 		        "date": statusDataRow.date,
 		        "amount": statusDataRow.amount,
 		        "description": statusDataRow.description,
@@ -633,6 +636,9 @@ function chargeInvoiceTable(client) {
 					reloadClientRow(); /////////////////////////////////////////////////////////////////////////////////////////
 						
       	}else if (data.status === 'PAGADO') {
+
+      		createLog2('Facturas', 'Se cambió el estado de la factura '+statusDataRow.invoice+' del cliente '+selectedClient.rut+' ('+selectedClient.name+') de PENDIENTE a PAGADO');
+
       		invoiceTable.row.add( {
 						"invoice": statusDataRow.invoice,
 		        "date": invoicePaidDate,

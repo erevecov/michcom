@@ -47,9 +47,11 @@ const logs = [{ // ver todos
             let credentials = {email: session.email, name: session.name, lastname: session.lastname, role: session.role};
             let description = request.payload.description;
             let form = request.payload.form;
+            let date = request.payload.date;
+            console.log(date)
           
             let logData = {
-                '_id': moment.tz('America/Santiago').format('YYYY-MM-DDTHH:mm:ss.SSSSS'),
+                '_id': date,
                 'userEmail': credentials.email,
                 'userName': credentials.name+' '+credentials.lastname,
                 'role': credentials.role,
@@ -66,6 +68,7 @@ const logs = [{ // ver todos
         },
         validate: {
             payload: Joi.object().keys({
+                date: Joi.string(),
                 description: Joi.string(),
                 form: Joi.string(),
             })

@@ -193,6 +193,7 @@
 
   
   <script>
+  moment.locale('es');
   function getTime(c) {
     if(c) {
       return moment.tz(c).format('YYYY-MM-DDTHH:mm:ss.SSSSS');
@@ -202,10 +203,12 @@
   }
 
   function createLog(form, desc) {
+    var date = getTime();
+
     $.ajax({
       url: 'api/log',
       type: 'POST',
-      data: {description: desc, form: form}
+      data: {date: date, description: desc, form: form}
     });
   }
   </script>

@@ -22,7 +22,7 @@ const invoices = [{ // Crear una factura
             let filter2 = filter1.replace('-', ''); // limpiar rut
 
 
-            db.find({   /* FALTA AGREGAR QUE NO BUSQUE LAS FACTURAS QUE ESTÁN DISABLED */
+            db.find({
                 "selector": {
                     "_id": {
                         "$gt": 0
@@ -141,6 +141,9 @@ const invoices = [{ // Crear una factura
                 "selector": {
                     "_id": {
                         "$gt": 0
+                    },
+                    "$not": {
+                      "status": "disabled"
                     },
                     "type": "invoice",
                     "invoice": invoice
