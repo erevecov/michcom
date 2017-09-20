@@ -3,7 +3,11 @@
 
 {{#extend "css"}}
 
-
+<style>
+	.toRight {
+		text-align: right;
+	}
+</style>
 {{/extend}}
 
 <div class="row">
@@ -301,7 +305,7 @@ jQuery(document).ready(function($) {
   	"oLanguage": {
 			"sSearch": ""
 		},
-  	"responsive": true,
+	  "responsive": true,
     "aaData" : clientsData,
     "columns" : [ 
     	{"data" : "name"}, 
@@ -309,8 +313,12 @@ jQuery(document).ready(function($) {
       {"data" : "invoiceOwed"}, 
       {"data" : "status"}, 
       {"data" : "amountOwed"}
-		],
-		createdRow: function( row, data, dataIndex){
+	],
+	"columnDefs": [
+      { className: "toRight", "targets": [1] }
+    ],
+	createdRow: function( row, data, dataIndex){
+	
 			//console.log(data[3])
 
 
