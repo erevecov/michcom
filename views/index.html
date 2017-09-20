@@ -7,6 +7,15 @@
 	.toRight {
 		text-align: right;
 	}
+	.noselect {
+ 	-webkit-touch-callout: none; /* iOS Safari */
+    -webkit-user-select: none; /* Safari */
+    -khtml-user-select: none; /* Konqueror HTML */
+	-moz-user-select: none; /* Firefox */
+    -ms-user-select: none; /* Internet Explorer/Edge */
+    user-select: none; /* Non-prefixed version, currently
+	                              supported by Chrome and Opera */
+	}
 </style>
 {{/extend}}
 
@@ -31,7 +40,7 @@
 	<div class="col-md-1"></div>
 
 	<div class="col-md-4 box-shadows" style="background:#FFFFFF; margin-top: 10px;">
-		<center><a id="collapseTrigger1" ><h3>Tronit: Monto adeudado</h3></a></center>
+		<center><a class="noselect" style="cursor: pointer;" id="collapseTrigger1" ><h3>Tronit: Monto adeudado</h3></a></center>
 		<div class="collapse" id="collapse1">
 			<div class="well">
 				<table class="table table-striped table-hover ">
@@ -51,7 +60,7 @@
 
 		<div style="height: 5px; width:100%; background-color:rgba(231, 76, 60,0.3);"></div>
 		<center><p id="totalTronit"></p></center>
-		<center><a id="collapseTrigger2"><h3>Michcom: Monto adeudado</h3></a></center>
+		<center><a class="noselect" style="cursor: pointer;" id="collapseTrigger2"><h3>Michcom: Monto adeudado</h3></a></center>
 		<div class="collapse" id="collapse2">
 			<div class="well">
 				<table class="table table-striped table-hover ">
