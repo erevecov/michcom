@@ -356,6 +356,46 @@ const invoices = [{ // Crear una factura
             })
         }
     }
+}, { 
+    method: 'GET',
+    path: '/api/invoiceAmount',
+    config: {
+        handler: (request, reply) => {
+            db.find({
+                "selector": {
+                  "_id": {
+                    "$gt": 0
+                  },
+                  "$not": {
+                    "status": "disabled"
+                  },
+                  "type": "invoice"
+                },
+                "fields": [
+                  "amount",
+                  "status",
+                  "invoice_type"
+                ]
+              }, function(err, result) { 
+                if (err) {
+                    throw err;
+                }
+
+                let amountTronit = 0;
+                let amountMichcom = 0;
+
+                result.docs.forEach(function(el) {
+                    if(el.invoice_type === 'service' && el.status === 'PENDIENTE') {
+                        amountTronit += el.amount;
+                    }else if(el.invoice_type === 'product' && el.status === 'PENDIENTE') {
+                        amountMichcom += el.amount;
+                    }
+                }, this);
+
+                return reply({tronit: amountTronit, michcom: amountMichcom});
+            });
+        }
+    }
 }];
 
 export default invoices;

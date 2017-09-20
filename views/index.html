@@ -26,11 +26,18 @@
 
 	<div class="col-md-1"></div>
 
-	<div class="col-md-4 box-shadows" style="background:#FFFFFF; height: 300px; margin-top: 10px;">
-		<center><h1>Monto total adeudado pendiente</h1></center>
+	<div class="col-md-4 box-shadows" style="background:#FFFFFF; margin-top: 10px;">
+		<center><h3>Tronit: Monto adeudado</h3></center>
+		<div style="height: 5px; width:100%; background-color:rgba(231, 76, 60,0.3);"></div>
+		<center><p id="totalTronit"></p></center>
+		<center><h3>Michcom: Monto adeudado</h3></center>
+		<div style="height: 5px; width:100%; background-color:rgba(231, 76, 60,0.3);"></div>
+		<center><p id="totalMichcom"></p></center>
+		<center><h1>Monto total adeudado</h1></center>
 		<div style="height: 5px; width:100%; background-color:rgba(231, 76, 60,0.3);"></div>
 		<center><p id="totalOwed"></p></center>
 	</div>
+
 	<div class="col-md-1"></div>
 	<div class="col-md-5 box-shadows" style="margin-top: 10px;" >
 		<div id="totalChart" style="height: 300px; margin: 0 auto"></div>
@@ -179,6 +186,19 @@ var invoiceNumberToChange;
 
 
 jQuery(document).ready(function($) {
+	getOweds();
+
+	function getOweds() {
+		$.ajax({
+		type: "GET",
+		url: "api/invoiceAmount",
+		success: function (data) {
+			$('#totalTronit').html('$ '+ number_format(data.tronit));
+			$('#totalMichcom').html('$ '+ number_format(data.michcom));
+		}
+		});
+	}
+
 	function createLog2(form, desc) { // solo para esta página
 		var date = getTime();
 
@@ -529,6 +549,7 @@ function chargeInvoiceTable(client) {
 					data: {invoice: statusDataRow.invoice},
 				})
 				.done(function(data) {
+					getOweds();
 
 					createLog2('Facturas', 'Se eliminó la factura '+statusDataRow.invoice+' del cliente '+selectedClient.rut+' ('+selectedClient.name+')');
 
@@ -606,6 +627,7 @@ function chargeInvoiceTable(client) {
       	data: postData
       })
       .done(function(data) {
+		getOweds();
       	statusSelectedRow.remove().draw();
       	if(data.status === 'PENDIENTE') {
 
@@ -1146,6 +1168,7 @@ $('#new').on('click', '#sendNewInvoice', function() {
 			data: {rut: selectedClient.rut, invoice: newInvoiceNumber, business: newInvoiceBusiness, amount: newInvoiceAmount, invoice_type: newInvoiceType, description: newInvoiceDescription, date: '-', iva: iva}
 		})
 		.done(function(data) {
+			getOweds();
 			createLog2('Facturas', 'Se agregó la factura '+newInvoiceNumber+' al cliente '+selectedClient.rut+' ('+selectedClient.name+')');
 			totalOwed += newInvoiceAmount;
 			$('#totalOwed').text('$ '+ number_format(totalOwed) );
