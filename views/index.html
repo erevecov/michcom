@@ -447,12 +447,13 @@ function chargeInvoiceTable(client) {
 	  $('.dataTables_filter input').attr("placeholder", "Buscador");
 
 	  
-	  $('#invoiceTable tbody').on('dblclick', 'tr', function () {                            //////////////VOLVER AQUI
+	  $('#invoiceTable tbody').on('dblclick', 'tr', function () {
 	  	statusDataRow = invoiceTable.row( $(this) ).data();
       	statusSelectedRow = invoiceTable.row( $(this)  );
       	invoiceNumberToChange = statusDataRow.invoice;
 
       if(statusDataRow.status === 'PENDIENTE') {
+		  	console.log(moment.tz('America/Santiago').format('MM-DD-YYYY'))
 		  	$('#infoContent').css('visibility', 'hidden');
 		  	$('#invoiceStep').html(`
 		  		<a id="goBack" class="btn btn-default"><i class="fa fa-arrow-left" aria-hidden="true"></i></a>
@@ -476,6 +477,7 @@ function chargeInvoiceTable(client) {
 		    });
 
 		    $('input[name="invoiceDate"]').focus();
+			
 	    }else if (statusDataRow.status === 'PAGADO') {
 	    	$('#infoContent').css('visibility', 'hidden');
 	    	$('#invoiceStep').html(`
