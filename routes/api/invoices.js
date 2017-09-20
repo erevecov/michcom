@@ -396,6 +396,46 @@ const invoices = [{ // Crear una factura
             });
         }
     }
+}, { // Cambiar es status de una factura a disabled
+    method: 'POST',
+    path: '/api/getInvoicesByType',
+    config: {
+        handler: (request, reply) => {
+            let invoice_type = request.payload.type;
+
+            db.find({ 
+                "selector": {
+                    "_id": {
+                        "$gt": 0
+                    },
+                    "status": "PENDIENTE",
+                    "type": "invoice",
+                    "invoice_type": invoice_type
+                },
+                "fields": [
+                  "invoice",
+                  "amount",
+                  "client"
+                ],
+                "sort": [
+                    {
+                        "_id": "desc"
+                    }
+                ]
+            }, function(err, result) {
+                if (err) {
+                    throw err;
+                }
+
+                return reply(result.docs);
+            });
+        },
+        validate: {
+            payload: Joi.object().keys({
+                type: Joi.string()
+            })
+        }
+    }
 }];
 
 export default invoices;

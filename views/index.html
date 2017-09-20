@@ -31,10 +31,43 @@
 	<div class="col-md-1"></div>
 
 	<div class="col-md-4 box-shadows" style="background:#FFFFFF; margin-top: 10px;">
-		<center><h3>Tronit: Monto adeudado</h3></center>
+		<center><a id="collapseTrigger1" ><h3>Tronit: Monto adeudado</h3></a></center>
+		<div class="collapse" id="collapse1">
+			<div class="well">
+				<table class="table table-striped table-hover ">
+					<thead>
+					  <tr>
+						<th>Factura</th>
+						<th>Monto</th>
+						<th>cliente</th>
+					  </tr>
+					</thead>
+					<tbody id="tronitInvoices">
+
+					</tbody>
+				</table>
+			</div>
+		</div>
+
 		<div style="height: 5px; width:100%; background-color:rgba(231, 76, 60,0.3);"></div>
 		<center><p id="totalTronit"></p></center>
-		<center><h3>Michcom: Monto adeudado</h3></center>
+		<center><a id="collapseTrigger2"><h3>Michcom: Monto adeudado</h3></a></center>
+		<div class="collapse" id="collapse2">
+			<div class="well">
+				<table class="table table-striped table-hover ">
+					<thead>
+					  <tr>
+						<th>Factura</th>
+						<th>Monto</th>
+						<th>cliente</th>
+					  </tr>
+					</thead>
+					<tbody id="michcomInvoices">
+
+					</tbody>
+				</table>
+			</div>
+		</div>
 		<div style="height: 5px; width:100%; background-color:rgba(231, 76, 60,0.3);"></div>
 		<center><p id="totalMichcom"></p></center>
 		<center><h1>Monto total adeudado</h1></center>
@@ -173,6 +206,8 @@ var totalOwed = 0;
 var totalClientOwed = 0;
 var totalOwedCount = 0;
 var totalClientOwedCount = 0;
+var collapse1Status = 0;
+var collapse2Status = 0;
 var datatable;
 var invoiceTable;
 var clientsData = [];
@@ -190,6 +225,72 @@ var invoiceNumberToChange;
 
 
 jQuery(document).ready(function($) {
+
+	$('#collapseTrigger1').on('click', function() {
+
+		setTimeout(function(){
+			if(collapse1Status == 0) {
+				collapse1Status = 1;
+				$('#collapse1').collapse('show');
+				$.ajax({
+					type: "POST",
+					url: "api/getInvoicesByType",
+					data: {type: 'service'},
+					success: function (data) {
+						$('#tronitInvoices').empty();	
+						$.each(data, function (i, value) { 
+							$('#tronitInvoices').append(`
+								<tr>
+									<td style="text-align:right;">${value.invoice}</td>
+									<td style="text-align:right;">$ ${number_format(value.amount)}</td>
+									<td style="text-align:right;">${$.formatRut(value.client)}</td>
+								</tr>
+							`)
+						});
+					}
+				});
+			} else if (collapse1Status == 1) {
+				collapse1Status = 0;
+				$('#collapse1').collapse('hide');
+			}		
+			
+			console.log(collapse1Status);
+		}, 200);
+	});
+
+	$('#collapseTrigger2').on('click', function() {
+
+		setTimeout(function(){
+			if(collapse2Status == 0) {
+				collapse2Status = 1;
+				$('#collapse2').collapse('show');
+				$.ajax({
+					type: "POST",
+					url: "api/getInvoicesByType",
+					data: {type: 'product'},
+					success: function (data) {
+						$('#michcomInvoices').empty();	
+						$.each(data, function (i, value) { 
+							$('#michcomInvoices').append(`
+								<tr>
+									<td style="text-align:right;">${value.invoice}</td>
+									<td style="text-align:right;">$ ${number_format(value.amount)}</td>
+									<td style="text-align:right;">${$.formatRut(value.client)}</td>
+								</tr>
+							`)
+						});
+					}
+				});
+			} else if (collapse2Status == 1) {
+				collapse2Status = 0;
+				$('#collapse2').collapse('hide');
+			}		
+			
+			console.log(collapse2Status);
+		}, 200);
+	});
+
+
 	getOweds();
 
 	function getOweds() {
