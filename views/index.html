@@ -16,6 +16,12 @@
     user-select: none; /* Non-prefixed version, currently
 	                              supported by Chrome and Opera */
 	}
+
+	table.display tbody td {
+		padding-left: 10px;
+		padding-right: 10px;
+		text-align:center;
+	}
 </style>
 {{/extend}}
 
@@ -423,10 +429,10 @@ jQuery(document).ready(function($) {
       {"data" : "invoiceOwed"}, 
       {"data" : "status"}, 
       {"data" : "amountOwed"}
-	],
+	],/*
 	"columnDefs": [
       { className: "toRight", "targets": [1] }
-    ],
+    ],*/
 	createdRow: function( row, data, dataIndex){
 	
 			//console.log(data[3])
@@ -563,7 +569,7 @@ function chargeInvoiceTable(client) {
                 "targets": [ 6 ],
                 "visible": false,
                 "searchable": false
-            }
+			}
         ],
 			createdRow: function( row, data, dataIndex){
 				if( data.status == `PAGADO`){
