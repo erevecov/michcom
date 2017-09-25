@@ -266,8 +266,11 @@
 					{"data" : "form"}, 
 					{"data" : "description"} 
 				],
+				createdRow: function( row, data, dataIndex){
+					//$(row).addClass('parent');
+	      		},
 				initComplete: function(settings, json) {
-	 				reloadAllLogs()
+					 reloadAllLogs()
   				}
 			
 
